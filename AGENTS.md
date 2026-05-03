@@ -28,38 +28,40 @@ Use these files as the source of truth:
 - Keep reusable game/configuration/sentence logic in `HaveFun.Core`.
 - Keep Blazor pages, startup, app settings, and web-specific services in `HaveFun.Web`.
 - Prefer typed models and services over ad hoc JSON or string handling.
-- Keep razor and its code behind code in separate files
-- Add services and data access should be in Core project.
+- Keep Razor markup and code-behind in separate files when a component needs non-trivial logic.
+- Add reusable services to `HaveFun.Core`.
+- Do not add data access or persistence unless a later stage explicitly introduces it.
 
 ## Repository Layout
 
 ```text
 src/
-  HaveFun.sln                Main solution
-  HaveFun.Web/                 Blazor app, pages, layout, hubs, static files
-  HaveFun.Core/                Services, models, EF Core data access, options
-scripts/
-  publish.ps1                  Publish one target package
-  dist.bat                     Build Windows and macOS packages and zip them
-design/                        Product, database, stage, and launch notes
+  HaveFun.sln                  Main solution
+  HaveFun.Web/                 Blazor app, pages, layouts, static files, startup
+  HaveFun.Core/                Reusable services, models, options, validation
+design/                        Product spec, stage plans, and task notes
 ```
 
 ### Folder Structure
 
 #### HaveFun.Core project
-- Services are in Services folder with Contracts subfolder with interfaces.
-- Data access repos are in Data folder with Contracts subfolder with interfaces.
-- Models are in Models folder.
-- Ignore folders and sub folders namespace generation
-- Keep `HaveFun.Core` namespace for all classes excepts Services
+
+- Put reusable services in a `Services` folder.
+- Put service interfaces in `Services/Contracts`.
+- Put shared models in a `Models` folder.
+- Put configuration/options models in a clear configuration folder.
+- Do not let folder structure create deep namespaces by default.
+- Use the root `HaveFun.Core` namespace for most classes unless a sub-namespace is already established.
+- Do not add repository/data-access folders during V1 unless the spec changes to include persistence.
 
 #### HaveFun.Web project
-- Set explicit namespace in each razor file
-- Move all layouts in Layouts folder
-- Move all pages in Pages folder
-- Move all component in Components folder
-- Ignore folders and sub folders namespace generation
-- Keep `HaveFun.Web` namespace for all classes 
+
+- Set an explicit namespace in each Razor file.
+- Keep pages in a `Pages` folder.
+- Keep layouts in a `Layouts` folder.
+- Keep reusable UI components in a `Components` folder.
+- Do not let folder structure create deep namespaces by default.
+- Use the root `HaveFun.Web` namespace for most web classes and Razor components.
 
 
 ## Configuration and Data
