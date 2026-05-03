@@ -1,38 +1,9 @@
 @namespace HaveFun.Web
 
-<div class="top-row ps-3 navbar navbar-dark">
-    <button class="navbar-toggler"
-            type="button"
-            title="Navigation menu"
-            aria-label="Navigation menu"
-            aria-expanded="@IsOpen"
-            @onclick="ToggleNavigation">
-        <span aria-hidden="true"></span>
-    </button>
-
-    @if (IsOpen)
-    {
-        <a class="navbar-brand" href="">HAVE FUN</a>
-    }
-</div>
-
-@if (IsOpen)
-{
-    <div class="nav-scrollable">
-        <nav class="nav flex-column">
-            <div class="nav-item px-3">
-                <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                    <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Home
-                </NavLink>
-            </div>
-        </nav>
-    </div>
-}
-
-@code {
-    [Parameter]
-    public bool IsOpen { get; set; }
-
-    [Parameter]
-    public EventCallback ToggleNavigation { get; set; }
-}
+<MudNavMenu>
+    <MudNavLink Href="/"
+                Match="NavLinkMatch.All"
+                Icon="@Icons.Material.Filled.Home">
+        Home
+    </MudNavLink>
+</MudNavMenu>

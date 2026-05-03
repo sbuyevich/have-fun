@@ -14,6 +14,7 @@ Use these files as the source of truth:
 
 - Use .NET / ASP.NET Core.
 - Use Blazor Web App with `InteractiveServer` render mode.
+- Use MudBlazor library including styles for all web components
 - Keep implementation code under `src`.
 - Solution: `src/HaveFun.sln`.
 - Projects:

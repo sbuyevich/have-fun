@@ -3,54 +3,67 @@
 
 <PageTitle>Have-Fun</PageTitle>
 
-<section class="home-shell">
-    <div class="home-header">
-        <p class="status-pill">Local server running</p>
-        <h1>Have-Fun</h1>
-        <p class="lead">
-            Host a browser game for friends on the same local network.
-        </p>
-    </div>
+<MudStack Spacing="4">
+    <MudPaper Class="pa-6" Elevation="0" Outlined="true">
+        <MudStack Spacing="2">
+            <MudAlert Severity="Severity.Success" Variant="Variant.Outlined" Dense="true">
+                Local server running
+            </MudAlert>
+            <MudText Typo="Typo.h3">Have-Fun</MudText>
+            <MudText Typo="Typo.subtitle1" Color="Color.Secondary">
+                Host a browser game for friends on the same local network.
+            </MudText>
+        </MudStack>
+    </MudPaper>
 
-    <div class="home-grid">
-        <section class="info-panel" aria-labelledby="join-urls-title">
-            <h2 id="join-urls-title">Join URLs</h2>
+    <MudGrid Spacing="3">
+        <MudItem xs="12" md="6">
+            <MudPaper Class="pa-4 h-100" Elevation="0" Outlined="true">
+                <MudText Typo="Typo.h6" Class="mb-4">Join URLs</MudText>
 
-            <dl class="url-list">
-                <div>
-                    <dt>Join from another device</dt>
-                    <dd>
+                <MudStack Spacing="3">
+                    <MudStack Spacing="1">
+                        <MudText Typo="Typo.subtitle2">Join from another device</MudText>
                         @if (LanUrl is null)
                         {
-                            <span class="muted">LAN address was not detected. Check this computer's network connection.</span>
+                            <MudText Typo="Typo.body2" Color="Color.Secondary">
+                                LAN address was not detected. Check this computer's network connection.
+                            </MudText>
                         }
                         else
                         {
-                            <code>@LanUrl</code>
+                            <MudPaper Class="pa-3" Elevation="0" Outlined="true">
+                                <MudText Typo="Typo.body2"><code>@LanUrl</code></MudText>
+                            </MudPaper>
                         }
-                    </dd>
-                </div>
-                <div>
-                    <dt>Host computer only</dt>
-                    <dd><code>@LocalhostUrl</code></dd>
-                </div>
-            </dl>
-        </section>
+                    </MudStack>
 
-        <section class="info-panel" aria-labelledby="stage-status-title">
-            <h2 id="stage-status-title">Stage 1 Status</h2>
-            <ul class="status-list">
-                <li>Blazor InteractiveServer is configured.</li>
-                <li>@SentenceCount predefined sentences loaded.</li>
-                <li>No database or cloud service is required.</li>
-            </ul>
-        </section>
-    </div>
+                    <MudStack Spacing="1">
+                        <MudText Typo="Typo.subtitle2">Host computer only</MudText>
+                        <MudPaper Class="pa-3" Elevation="0" Outlined="true">
+                            <MudText Typo="Typo.body2"><code>@LocalhostUrl</code></MudText>
+                        </MudPaper>
+                    </MudStack>
+                </MudStack>
+            </MudPaper>
+        </MudItem>
 
-    <section class="name-placeholder" aria-labelledby="name-placeholder-title">
-        <h2 id="name-placeholder-title">Name entry comes next</h2>
-        <p>
+        <MudItem xs="12" md="6">
+            <MudPaper Class="pa-4 h-100" Elevation="0" Outlined="true">
+                <MudText Typo="Typo.h6" Class="mb-4">Stage 1 Status</MudText>
+                <MudList T="string" Dense="true">
+                    <MudListItem Icon="@Icons.Material.Filled.CheckCircle">Blazor InteractiveServer is configured.</MudListItem>
+                    <MudListItem Icon="@Icons.Material.Filled.CheckCircle">@SentenceCount predefined sentences loaded.</MudListItem>
+                    <MudListItem Icon="@Icons.Material.Filled.CheckCircle">No database or cloud service is required.</MudListItem>
+                </MudList>
+            </MudPaper>
+        </MudItem>
+    </MudGrid>
+
+    <MudPaper Class="pa-4" Elevation="0" Outlined="true">
+        <MudText Typo="Typo.h6">Name entry comes next</MudText>
+        <MudText Typo="Typo.body2" Color="Color.Secondary">
             Stage 2 will add the shared name input here and route the configured master name to the dashboard.
-        </p>
-    </section>
-</section>
+        </MudText>
+    </MudPaper>
+</MudStack>
