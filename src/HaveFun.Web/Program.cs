@@ -22,7 +22,9 @@ builder.Services.AddSingleton<ISentenceLibrary>(_ =>
 
     return new InMemorySentenceLibrary(sentences);
 });
+builder.Services.AddSingleton<IPlayerRegistry, PlayerRegistry>();
 builder.Services.AddSingleton<IJoinUrlProvider, JoinUrlProvider>();
+builder.Services.AddScoped<IPlayerSessionStorage, BrowserPlayerSessionStorage>();
 
 var app = builder.Build();
 
