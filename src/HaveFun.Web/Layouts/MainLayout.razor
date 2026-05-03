@@ -1,16 +1,12 @@
 @namespace HaveFun.Web
 @inherits LayoutComponentBase
 
-<div class="page">
+<div class="page @(isNavigationOpen ? "nav-open" : "nav-closed")">
     <div class="sidebar">
-        <NavMenu />
+        <NavMenu IsOpen="isNavigationOpen" ToggleNavigation="ToggleNavigation" />
     </div>
 
     <main>
-        <div class="top-row px-4">
-            <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">About</a>
-        </div>
-
         <article class="content px-4">
             @Body
         </article>
@@ -22,3 +18,12 @@
     <a href="." class="reload">Reload</a>
     <span class="dismiss">X</span>
 </div>
+
+@code {
+    private bool isNavigationOpen = true;
+
+    private void ToggleNavigation()
+    {
+        isNavigationOpen = !isNavigationOpen;
+    }
+}
