@@ -1,8 +1,57 @@
 @page "/"
 @namespace HaveFun.Web
+@rendermode InteractiveServer
 
-<PageTitle>Home</PageTitle>
+<PageTitle>Have-Fun</PageTitle>
 
-<h1>Hello, world!</h1>
+<section class="home-shell">
+    <div class="home-header">
+        <p class="status-pill">Local server running</p>
+        <h1>Have-Fun</h1>
+        <p class="lead">
+            Host a browser game for friends on the same local network.
+        </p>
+    </div>
 
-Welcome to your new app.
+    <div class="home-grid">
+        <section class="info-panel" aria-labelledby="join-urls-title">
+            <h2 id="join-urls-title">Join URLs</h2>
+
+            <dl class="url-list">
+                <div>
+                    <dt>Join from another device</dt>
+                    <dd>
+                        @if (LanUrl is null)
+                        {
+                            <span class="muted">LAN address was not detected. Check this computer's network connection.</span>
+                        }
+                        else
+                        {
+                            <code>@LanUrl</code>
+                        }
+                    </dd>
+                </div>
+                <div>
+                    <dt>Host computer only</dt>
+                    <dd><code>@LocalhostUrl</code></dd>
+                </div>
+            </dl>
+        </section>
+
+        <section class="info-panel" aria-labelledby="stage-status-title">
+            <h2 id="stage-status-title">Stage 1 Status</h2>
+            <ul class="status-list">
+                <li>Blazor InteractiveServer is configured.</li>
+                <li>@SentenceCount predefined sentences loaded.</li>
+                <li>No database or cloud service is required.</li>
+            </ul>
+        </section>
+    </div>
+
+    <section class="name-placeholder" aria-labelledby="name-placeholder-title">
+        <h2 id="name-placeholder-title">Name entry comes next</h2>
+        <p>
+            Stage 2 will add the shared name input here and route the configured master name to the dashboard.
+        </p>
+    </section>
+</section>

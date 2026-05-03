@@ -58,3 +58,119 @@ h1:focus {
 .form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
     text-align: start;
 }
+
+.home-shell {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 2rem 0 3rem;
+}
+
+.home-header {
+    margin-bottom: 2rem;
+}
+
+.home-header h1 {
+    margin: 0;
+    font-size: 2.75rem;
+    font-weight: 700;
+}
+
+.lead {
+    max-width: 42rem;
+    margin-top: 0.75rem;
+    color: #425466;
+    font-size: 1.15rem;
+}
+
+.status-pill {
+    display: inline-flex;
+    align-items: center;
+    margin-bottom: 0.75rem;
+    padding: 0.35rem 0.7rem;
+    border: 1px solid #b8d7c0;
+    border-radius: 999px;
+    background: #edf8ef;
+    color: #276738;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.home-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+}
+
+.info-panel,
+.name-placeholder {
+    border: 1px solid #d7dde5;
+    border-radius: 8px;
+    background: #fff;
+    padding: 1.25rem;
+}
+
+.info-panel h2,
+.name-placeholder h2 {
+    margin: 0 0 1rem;
+    font-size: 1.1rem;
+}
+
+.url-list {
+    margin: 0;
+}
+
+.url-list div + div {
+    margin-top: 1rem;
+}
+
+.url-list dt {
+    margin-bottom: 0.25rem;
+    color: #5d6b7a;
+    font-size: 0.9rem;
+    font-weight: 700;
+}
+
+.url-list dd {
+    margin: 0;
+}
+
+.url-list code {
+    display: block;
+    overflow-wrap: anywhere;
+    padding: 0.65rem;
+    border-radius: 6px;
+    background: #f5f7fa;
+    color: #142033;
+}
+
+.muted {
+    color: #687789;
+}
+
+.status-list {
+    margin: 0;
+    padding-left: 1.2rem;
+}
+
+.status-list li + li {
+    margin-top: 0.45rem;
+}
+
+.name-placeholder {
+    margin-top: 1rem;
+}
+
+.name-placeholder p {
+    margin: 0;
+    color: #5d6b7a;
+}
+
+@media (max-width: 720px) {
+    .home-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .home-header h1 {
+        font-size: 2.25rem;
+    }
+}

@@ -1,4 +1,5 @@
 using HaveFun.Core;
+using HaveFun.Web;
 using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -19,11 +20,13 @@ builder.Services.AddSingleton<ISentenceLibrary>(_ =>
 
     return new InMemorySentenceLibrary(sentences);
 });
+builder.Services.AddSingleton<IJoinUrlProvider, JoinUrlProvider>();
 
 var app = builder.Build();
 
 _ = app.Services.GetRequiredService<IOptions<GameOptions>>().Value;
 _ = app.Services.GetRequiredService<ISentenceLibrary>();
+_ = app.Services.GetRequiredService<IJoinUrlProvider>();
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
