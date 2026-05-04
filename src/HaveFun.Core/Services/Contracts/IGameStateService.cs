@@ -19,4 +19,6 @@ public interface IGameStateService
     PlayerRoundState? SubmitPlayerRound(string playerName);
 
     IReadOnlyList<PlayerRoundState> GetSubmittedPlayerRoundStates();
+
+    RoundResults? GetCurrentRoundResults();
 }

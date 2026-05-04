@@ -228,6 +228,55 @@ public sealed class GameStateService : IGameStateService
         }
     }
 
+    public RoundResults? GetCurrentRoundResults()
+    {
+        lock (syncRoot)
+        {
+            if (currentRound is null)
+            {
+                return null;
+            }
+
+            var rankedResults = playerRoundStates.Values
+                .Where(playerRoundState =>
+                    playerRoundState.RoundId == currentRound.Id &&
+                    playerRoundState.IsSubmitted &&
+                    playerRoundState.SubmittedSentence is not null &&
+                    playerRoundState.SpentTime is not null &&
+                    playerRoundState.SubmittedAt is not null)
+                .Select(playerRoundState => new
+                {
+                    playerRoundState.PlayerName,
+                    SubmittedSentence = playerRoundState.SubmittedSentence!,
+                    CorrectnessCount = CalculateCorrectness(currentRound.OriginalWords, playerRoundState.SubmittedSentence!),
+                    TotalWordCount = currentRound.OriginalWords.Count,
+                    SpentTime = playerRoundState.SpentTime!.Value,
+                    SubmittedAt = playerRoundState.SubmittedAt!.Value
+                })
+                .OrderByDescending(playerResult => playerResult.CorrectnessCount)
+                .ThenBy(playerResult => playerResult.SpentTime)
+                .ThenBy(playerResult => playerResult.PlayerName, StringComparer.Ordinal)
+                .Select((playerResult, index) => new PlayerResult
+                {
+                    Rank = index + 1,
+                    PlayerName = playerResult.PlayerName,
+                    SubmittedSentence = playerResult.SubmittedSentence,
+                    CorrectnessCount = playerResult.CorrectnessCount,
+                    TotalWordCount = playerResult.TotalWordCount,
+                    SpentTime = playerResult.SpentTime,
+                    SubmittedAt = playerResult.SubmittedAt
+                })
+                .ToArray();
+
+            return new RoundResults
+            {
+                RoundId = currentRound.Id,
+                CorrectSentence = currentRound.SentenceText,
+                Results = rankedResults
+            };
+        }
+    }
+
     private static IReadOnlyList<string> SplitWords(string sentenceText)
     {
         return sentenceText
@@ -246,6 +295,23 @@ public sealed class GameStateService : IGameStateService
         }
 
         return shuffledWords;
+    }
+
+    private static int CalculateCorrectness(IReadOnlyList<string> originalWords, string submittedSentence)
+    {
+        var submittedWords = SplitWords(submittedSentence);
+        var comparedWordCount = Math.Min(originalWords.Count, submittedWords.Count);
+        var correctnessCount = 0;
+
+        for (var index = 0; index < comparedWordCount; index++)
+        {
+            if (submittedWords[index] == originalWords[index])
+            {
+                correctnessCount++;
+            }
+        }
+
+        return correctnessCount;
     }
 
     private PlayerRoundState? GetPlayerRoundStateUnsafe(Guid roundId, string playerName)

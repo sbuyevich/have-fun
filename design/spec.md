@@ -1,4 +1,4 @@
-# Have-Fun V1 Specification
+# Have-Fun V0 Specification
 
 ## Summary
 
