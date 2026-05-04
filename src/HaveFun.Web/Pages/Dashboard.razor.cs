@@ -18,6 +18,8 @@ public partial class Dashboard : ComponentBase, IAsyncDisposable
 
     private IReadOnlyList<PlayerRoundState> SubmittedPlayerRoundStates { get; set; } = [];
 
+    private RoundResults? CurrentRoundResults { get; set; }
+
     private IReadOnlyList<SentenceDefinition> Sentences { get; set; } = [];
 
     private int SelectedSentenceIndex { get; set; } = -1;
@@ -116,6 +118,7 @@ public partial class Dashboard : ComponentBase, IAsyncDisposable
     private void RefreshSubmissionProgress()
     {
         SubmittedPlayerRoundStates = GameState.GetSubmittedPlayerRoundStates();
+        CurrentRoundResults = GameState.GetCurrentRoundResults();
     }
 
     private void HandleCurrentRoundChanged(CurrentRound round)
@@ -149,5 +152,10 @@ public partial class Dashboard : ComponentBase, IAsyncDisposable
         return sentence.Text.Length <= maxLength
             ? sentence.Text
             : $"{sentence.Text[..maxLength]}...";
+    }
+
+    private static string FormatSpentTime(TimeSpan spentTime)
+    {
+        return $"{(int)spentTime.TotalMinutes:00}:{spentTime.Seconds:00}";
     }
 }

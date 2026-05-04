@@ -185,5 +185,63 @@ else
                 </MudItem>
             </MudGrid>
         </MudPaper>
+
+        <MudPaper Class="pa-4" Elevation="0" Outlined="true">
+            <MudStack Spacing="3">
+                <MudStack Row="true" AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween">
+                    <MudText Typo="Typo.h6">Results</MudText>
+                    @if (CurrentRoundResults?.Results.Count > 0)
+                    {
+                        <MudChip T="string" Color="Color.Success" Variant="Variant.Outlined">
+                            @CurrentRoundResults.Results.Count ranked
+                        </MudChip>
+                    }
+                </MudStack>
+
+                @if (CurrentRoundResults is null)
+                {
+                    <MudText Typo="Typo.body2" Color="Color.Secondary">
+                        Start a round to see ranked results.
+                    </MudText>
+                }
+                else
+                {
+                    <MudPaper Class="pa-3" Elevation="0" Outlined="true">
+                        <MudText Typo="Typo.subtitle2">Correct Sentence</MudText>
+                        <MudText Typo="Typo.body1">@CurrentRoundResults.CorrectSentence</MudText>
+                    </MudPaper>
+
+                    @if (CurrentRoundResults.Results.Count == 0)
+                    {
+                        <MudAlert Severity="Severity.Info" Variant="Variant.Outlined" Dense="true">
+                            No player submissions yet.
+                        </MudAlert>
+                    }
+                    else
+                    {
+                        <MudTable T="PlayerResult"
+                                  Items="@CurrentRoundResults.Results"
+                                  Dense="true"
+                                  Hover="true"
+                                  Elevation="0">
+                            <HeaderContent>
+                                <MudTh>Rank</MudTh>
+                                <MudTh>Player</MudTh>
+                                <MudTh>Submitted Sentence</MudTh>
+                                <MudTh>Correctness</MudTh>
+                                <MudTh>Spent Time</MudTh>
+                            </HeaderContent>
+                            <RowTemplate>
+                                <MudTd DataLabel="Rank">@context.Rank</MudTd>
+                                <MudTd DataLabel="Player">@context.PlayerName</MudTd>
+                                <MudTd DataLabel="Submitted Sentence">@context.SubmittedSentence</MudTd>
+                                <MudTd DataLabel="Correctness">@context.CorrectnessDisplay</MudTd>
+                                <MudTd DataLabel="Spent Time">@FormatSpentTime(context.SpentTime)</MudTd>
+                            </RowTemplate>
+                        </MudTable>
+                    }
+                }
+            </MudStack>
+        </MudPaper>
     </MudStack>
 }
