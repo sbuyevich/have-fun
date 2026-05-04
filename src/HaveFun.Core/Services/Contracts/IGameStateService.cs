@@ -4,6 +4,8 @@ public interface IGameStateService
 {
     event Action<CurrentRound>? CurrentRoundChanged;
 
+    event Action<PlayerRoundState>? PlayerRoundStateChanged;
+
     CurrentRound? CurrentRound { get; }
 
     CurrentRound StartRound(SentenceDefinition sentence);
@@ -15,4 +17,6 @@ public interface IGameStateService
     PlayerRoundState? SelectWord(string playerName, Guid wordId);
 
     PlayerRoundState? SubmitPlayerRound(string playerName);
+
+    IReadOnlyList<PlayerRoundState> GetSubmittedPlayerRoundStates();
 }

@@ -4,7 +4,7 @@ using MudBlazor;
 
 namespace HaveFun.Web;
 
-public partial class Dashboard : ComponentBase
+public partial class Dashboard : ComponentBase, IAsyncDisposable
 {
     private bool IsSessionChecked { get; set; }
 
@@ -15,6 +15,8 @@ public partial class Dashboard : ComponentBase
     private string MasterName { get; set; } = "Master";
 
     private IReadOnlyList<PlayerSession> Players { get; set; } = [];
+
+    private IReadOnlyList<PlayerRoundState> SubmittedPlayerRoundStates { get; set; } = [];
 
     private IReadOnlyList<SentenceDefinition> Sentences { get; set; } = [];
 
@@ -55,7 +57,17 @@ public partial class Dashboard : ComponentBase
         LanUrl = urls.LanUrl ?? urls.LocalhostUrl;
         Sentences = SentenceLibrary.Sentences;
         RefreshPlayers();
+        RefreshSubmissionProgress();
         CurrentRound = GameState.CurrentRound;
+        GameState.CurrentRoundChanged += HandleCurrentRoundChanged;
+        GameState.PlayerRoundStateChanged += HandlePlayerRoundStateChanged;
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        GameState.CurrentRoundChanged -= HandleCurrentRoundChanged;
+        GameState.PlayerRoundStateChanged -= HandlePlayerRoundStateChanged;
+        await ValueTask.CompletedTask;
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -93,11 +105,41 @@ public partial class Dashboard : ComponentBase
         }
 
         CurrentRound = GameState.StartRound(SelectedSentence);
+        RefreshSubmissionProgress();
     }
 
     private void RefreshPlayers()
     {
         Players = PlayerRegistry.GetPlayers();
+    }
+
+    private void RefreshSubmissionProgress()
+    {
+        SubmittedPlayerRoundStates = GameState.GetSubmittedPlayerRoundStates();
+    }
+
+    private void HandleCurrentRoundChanged(CurrentRound round)
+    {
+        _ = InvokeAsync(() =>
+        {
+            CurrentRound = round;
+            RefreshSubmissionProgress();
+            StateHasChanged();
+        });
+    }
+
+    private void HandlePlayerRoundStateChanged(PlayerRoundState playerRoundState)
+    {
+        if (!playerRoundState.IsSubmitted)
+        {
+            return;
+        }
+
+        _ = InvokeAsync(() =>
+        {
+            RefreshSubmissionProgress();
+            StateHasChanged();
+        });
     }
 
     private static string GetSentenceLabel(SentenceDefinition sentence)

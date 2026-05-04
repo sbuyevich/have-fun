@@ -102,6 +102,33 @@ else
                             }
                         </MudList>
                     }
+
+                    <MudDivider Class="my-3" />
+                    <MudText Typo="Typo.subtitle2">Submissions</MudText>
+                    @if (CurrentRound is null)
+                    {
+                        <MudText Typo="Typo.body2" Color="Color.Secondary">
+                            No active round.
+                        </MudText>
+                    }
+                    else
+                    {
+                        <MudText Typo="Typo.body2" Color="Color.Secondary">
+                            @SubmittedPlayerRoundStates.Count of @Players.Count submitted
+                        </MudText>
+
+                        @if (SubmittedPlayerRoundStates.Count > 0)
+                        {
+                            <MudList T="PlayerRoundState" Dense="true">
+                                @foreach (var submission in SubmittedPlayerRoundStates)
+                                {
+                                    <MudListItem Icon="@Icons.Material.Filled.CheckCircle">
+                                        @submission.PlayerName
+                                    </MudListItem>
+                                }
+                            </MudList>
+                        }
+                    }
                 </MudPaper>
             </MudItem>
         </MudGrid>

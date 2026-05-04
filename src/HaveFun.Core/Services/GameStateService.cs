@@ -8,6 +8,8 @@ public sealed class GameStateService : IGameStateService
 
     public event Action<CurrentRound>? CurrentRoundChanged;
 
+    public event Action<PlayerRoundState>? PlayerRoundStateChanged;
+
     public CurrentRound? CurrentRound
     {
         get
@@ -118,6 +120,7 @@ public sealed class GameStateService : IGameStateService
     public PlayerRoundState? SelectWord(string playerName, Guid wordId)
     {
         var normalizedName = NormalizePlayerName(playerName);
+        PlayerRoundState? updatedState;
 
         if (string.IsNullOrWhiteSpace(normalizedName))
         {
@@ -145,7 +148,7 @@ public sealed class GameStateService : IGameStateService
                 return playerRoundState;
             }
 
-            var updatedState = playerRoundState with
+            updatedState = playerRoundState with
             {
                 AvailableWords = playerRoundState.AvailableWords
                     .Where(word => word.Id != wordId)
@@ -156,14 +159,17 @@ public sealed class GameStateService : IGameStateService
             };
 
             playerRoundStates[new PlayerRoundKey(currentRound.Id, normalizedName)] = updatedState;
-
-            return updatedState;
         }
+
+        PlayerRoundStateChanged?.Invoke(updatedState);
+
+        return updatedState;
     }
 
     public PlayerRoundState? SubmitPlayerRound(string playerName)
     {
         var normalizedName = NormalizePlayerName(playerName);
+        PlayerRoundState? updatedState;
 
         if (string.IsNullOrWhiteSpace(normalizedName))
         {
@@ -190,7 +196,7 @@ public sealed class GameStateService : IGameStateService
             }
 
             var submittedAt = DateTimeOffset.UtcNow;
-            var updatedState = playerRoundState with
+            updatedState = playerRoundState with
             {
                 IsSubmitted = true,
                 SubmittedSentence = playerRoundState.CollectedSentence,
@@ -199,8 +205,26 @@ public sealed class GameStateService : IGameStateService
             };
 
             playerRoundStates[new PlayerRoundKey(currentRound.Id, normalizedName)] = updatedState;
+        }
 
-            return updatedState;
+        PlayerRoundStateChanged?.Invoke(updatedState);
+
+        return updatedState;
+    }
+
+    public IReadOnlyList<PlayerRoundState> GetSubmittedPlayerRoundStates()
+    {
+        lock (syncRoot)
+        {
+            if (currentRound is null)
+            {
+                return [];
+            }
+
+            return playerRoundStates.Values
+                .Where(playerRoundState => playerRoundState.RoundId == currentRound.Id && playerRoundState.IsSubmitted)
+                .OrderBy(playerRoundState => playerRoundState.SubmittedAt)
+                .ToArray();
         }
     }
 
