@@ -18,9 +18,17 @@ public partial class Player : ComponentBase, IAsyncDisposable
 
     private CurrentRound? CurrentRound { get; set; }
 
+    private string? PlayerName { get; set; }
+
+    private PlayerRoundState? PlayerRoundState { get; set; }
+
     private TimeSpan RemainingTime { get; set; }
 
     private string RemainingTimeText => $"{(int)RemainingTime.TotalMinutes:00}:{RemainingTime.Seconds:00}";
+
+    private int AvailableWordCount => PlayerRoundState?.AvailableWords.Count ?? CurrentRound?.ShuffledWords.Count ?? 0;
+
+    private bool CanSubmit => PlayerRoundState?.CanSubmit == true;
 
     private bool IsTimerExpired => CurrentRound is not null && RemainingTime == TimeSpan.Zero;
 
@@ -61,7 +69,9 @@ public partial class Player : ComponentBase, IAsyncDisposable
         }
 
         DisplayName = registeredPlayer.DisplayName;
+        PlayerName = registeredPlayer.DisplayName;
         CurrentRound = GameState.CurrentRound;
+        RefreshPlayerRoundState();
         GameState.CurrentRoundChanged += HandleCurrentRoundChanged;
         StartTimerIfRoundIsActive();
         IsSessionChecked = true;
@@ -80,9 +90,30 @@ public partial class Player : ComponentBase, IAsyncDisposable
         _ = InvokeAsync(() =>
         {
             CurrentRound = round;
+            RefreshPlayerRoundState();
             StartTimerIfRoundIsActive();
             StateHasChanged();
         });
+    }
+
+    private void SelectWord(Guid wordId)
+    {
+        if (PlayerName is null)
+        {
+            return;
+        }
+
+        PlayerRoundState = GameState.SelectWord(PlayerName, wordId);
+    }
+
+    private void SubmitRound()
+    {
+        if (PlayerName is null)
+        {
+            return;
+        }
+
+        PlayerRoundState = GameState.SubmitPlayerRound(PlayerName);
     }
 
     private void StartTimerIfRoundIsActive()
@@ -149,5 +180,21 @@ public partial class Player : ComponentBase, IAsyncDisposable
         var elapsed = DateTimeOffset.UtcNow - CurrentRound.StartedAt.Value;
         var remaining = TimeSpan.FromSeconds(CurrentRound.TimeLimitInSeconds) - elapsed;
         RemainingTime = remaining <= TimeSpan.Zero ? TimeSpan.Zero : remaining;
+    }
+
+    private void RefreshPlayerRoundState()
+    {
+        if (PlayerName is null || CurrentRound is null)
+        {
+            PlayerRoundState = null;
+            return;
+        }
+
+        PlayerRoundState = GameState.GetOrCreatePlayerRoundState(PlayerName);
+    }
+
+    private static string FormatSpentTime(TimeSpan spentTime)
+    {
+        return $"{(int)spentTime.TotalMinutes:00}:{spentTime.Seconds:00}";
     }
 }

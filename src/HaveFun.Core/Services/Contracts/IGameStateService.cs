@@ -7,4 +7,12 @@ public interface IGameStateService
     CurrentRound? CurrentRound { get; }
 
     CurrentRound StartRound(SentenceDefinition sentence);
+
+    PlayerRoundState? GetPlayerRoundState(string playerName);
+
+    PlayerRoundState? GetOrCreatePlayerRoundState(string playerName);
+
+    PlayerRoundState? SelectWord(string playerName, Guid wordId);
+
+    PlayerRoundState? SubmitPlayerRound(string playerName);
 }
