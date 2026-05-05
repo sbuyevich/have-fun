@@ -13,7 +13,7 @@ Included:
 - Show the correct sentence only after the sentence is finished.
 - Track current sentence score.
 - Track cumulative total score as the sum of correct words across sentences.
-- Add sortable results grid with player name, avatar, submission duration, current sentence score, and total score.
+- Add sortable results grid to `WordScramble.Master.razor` with player name, avatar, submission duration, current sentence score, and total score.
 - Default results sort is player name.
 
 Not included:

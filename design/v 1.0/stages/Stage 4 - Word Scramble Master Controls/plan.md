@@ -8,8 +8,8 @@ Implement the V1.0 Word Scramble master-controlled sentence flow.
 
 Included:
 
-- Add Start, Restart, and Finish controls to the Word Scramble master dashboard.
-- Add timer display to the master dashboard.
+- Add Start, Restart, and Finish controls to `WordScramble.Master.razor`.
+- Add timer display to `WordScramble.Master.razor`.
 - Start begins the first sentence when no sentence has started.
 - Start begins the next sentence after results are shown.
 - Restart resets the game from the first sentence and clears cumulative score.
@@ -33,7 +33,7 @@ Not included:
 ## Test Plan
 
 - Build from `src`.
-- Start Word Scramble from the master dashboard.
+- Start Word Scramble from `WordScramble.Master.razor`.
 - Confirm timer begins.
 - Click Finish and confirm the sentence ends immediately.
 - Click Start again and confirm the next sentence begins.

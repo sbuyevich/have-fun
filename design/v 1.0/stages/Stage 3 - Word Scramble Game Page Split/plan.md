@@ -2,14 +2,14 @@
 
 ## Objective
 
-Move Word Scramble into game-owned role-specific pages.
+Move Word Scramble into game-owned role-specific Razor pages.
 
 ## Scope
 
 Included:
 
-- Create a Word Scramble master dashboard.
-- Create or relocate the Word Scramble player page.
+- Create `WordScramble.Master.razor` for the Word Scramble master dashboard.
+- Create or relocate the player gameplay page to `WordScramble.Player.razor`.
 - Keep the player page functionally as-is.
 - Move Word Scramble controls out of any generic dashboard.
 - Keep role and session guards on game pages.
@@ -23,15 +23,15 @@ Not included:
 
 ## Done Criteria
 
-- Word Scramble owns its master dashboard.
-- Word Scramble owns its player page.
+- Word Scramble owns `WordScramble.Master.razor`.
+- Word Scramble owns `WordScramble.Player.razor`.
 - Master and player routes are separate.
 - Player gameplay still works as before.
 
 ## Test Plan
 
 - Build from `src`.
-- Navigate as master to Word Scramble master dashboard.
-- Navigate as player to Word Scramble player page.
+- Navigate as master to `WordScramble.Master.razor`.
+- Navigate as player to `WordScramble.Player.razor`.
 - Confirm normal players cannot open the master dashboard.
 - Confirm the master dashboard does not reveal the active sentence during play.

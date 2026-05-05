@@ -58,6 +58,10 @@ Players can:
 - `/` remains the registration page.
 - `/home` is the post-registration landing page for both roles.
 - Word Scramble uses a game-specific master dashboard and a game-specific player page.
+- Each game owns exactly two role-specific Razor page components:
+  - `{GameName}.Master.razor` for the Game Master experience.
+  - `{GameName}.Player.razor` for the Player experience.
+- For Word Scramble, use `WordScramble.Master.razor` and `WordScramble.Player.razor`.
 - Master game selection sends a SignalR message that navigates players to the selected game page.
 - If a user opens a role-restricted page without the required session state, the app sends them back to registration or shows a clear role/session error.
 
@@ -134,7 +138,7 @@ Required behavior:
 - Selecting a game sends a SignalR message to connected players.
 - Player browsers navigate to the selected game's player page after receiving the SignalR message.
 - The Game Master navigates to the selected game's master dashboard.
-- Each game must define its own master dashboard and its own player page.
+- Each game must define its own master dashboard and its own player page as separate Razor page components following `{GameName}.Master.razor` and `{GameName}.Player.razor`.
 
 No database, message broker, or external real-time service is used.
 
@@ -231,6 +235,7 @@ Restarting the server clears registered players, active game state, rounds, sent
 - Solution remains `HaveFun`.
 - Implementation code remains under `src`.
 - `HaveFun.Web` contains UI, startup, SignalR hub, session storage integration, game-specific master dashboards, game-specific player pages, and static assets.
+- Game-specific pages use role suffixes in their filenames, such as `WordScramble.Master.razor` and `WordScramble.Player.razor`.
 - `HaveFun.Core` contains reusable models and in-memory services.
 
 ## Implementation Stages
@@ -277,8 +282,8 @@ Move Word Scramble into game-specific master and player pages.
 
 Included:
 
-- Create a Word Scramble master dashboard.
-- Create or relocate the Word Scramble player page.
+- Create `WordScramble.Master.razor` for the Word Scramble master dashboard.
+- Create or relocate the player page to `WordScramble.Player.razor`.
 - Keep player gameplay functionally as-is.
 - Remove Word Scramble-specific round controls from any generic dashboard.
 - Keep role/session guards on both game pages.

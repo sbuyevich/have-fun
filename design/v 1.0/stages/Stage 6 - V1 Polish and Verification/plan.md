@@ -9,6 +9,7 @@ Verify and polish the complete V1.0 flow.
 Included:
 
 - Confirm route guards for master, player, and unregistered users.
+- Confirm every game has exactly two role-specific pages, using the `{GameName}.Master.razor` and `{GameName}.Player.razor` naming convention.
 - Confirm empty, waiting, active, finished, and error states are clear.
 - Confirm QR code appears only on Master Home.
 - Confirm avatar fallback behavior.
@@ -37,5 +38,6 @@ Not included:
 - Select avatars for players.
 - Confirm Master Home shows LAN URL, QR code, and players.
 - Select Word Scramble and confirm SignalR navigation.
+- Confirm Word Scramble routes land on `WordScramble.Master.razor` for master and `WordScramble.Player.razor` for players.
 - Play multiple sentences, including Finish before all players submit.
 - Confirm scoring, totals, sorting, and restart behavior.
