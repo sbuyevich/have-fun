@@ -1,0 +1,56 @@
+@namespace HaveFun.Web
+@inject IAvatarLibraryService AvatarLibrary
+
+<MudStack Spacing="4">
+    <MudPaper Class="pa-6" Elevation="0" Outlined="true">
+        <MudGrid Spacing="3" Class="align-center">
+            <MudItem xs="12" md="8">
+                <MudText Typo="Typo.h3">@CurrentUserName</MudText>
+                <MudText Typo="Typo.subtitle1" Color="Color.Secondary">
+                    Wait for Game Start
+                </MudText>
+            </MudItem>
+            <MudItem xs="12" md="4" Class="d-flex justify-end">
+                <img class="home-avatar home-avatar--master"
+                     src="@AvatarLibrary.GetAvatarUrl(SelectedAvatarFileName)"
+                     alt="Selected avatar" />
+            </MudItem>
+        </MudGrid>
+    </MudPaper>
+
+    <MudPaper Class="pa-4" Elevation="0" Outlined="true">
+        <MudText Typo="Typo.h6" Class="mb-3">Choose Avatar</MudText>
+        <MudRadioGroup T="string"
+                       Value="@SelectedAvatarFileName"
+                       ValueChanged="SelectedAvatarFileNameChanged">
+            <MudGrid Spacing="2">
+                @foreach (var avatar in Avatars)
+                {
+                    <MudItem xs="6" sm="4" md="3">
+                        <label class="home-avatar-choice">
+                            <MudRadio T="string" Value="@avatar.FileName" Color="Color.Primary" />
+                            <img class="home-avatar home-avatar--choice"
+                                 src="@avatar.Url"
+                                 alt="@avatar.DisplayName" />
+                            <span>@avatar.DisplayName</span>
+                        </label>
+                    </MudItem>
+                }
+            </MudGrid>
+        </MudRadioGroup>
+    </MudPaper>
+</MudStack>
+
+@code {
+    [Parameter]
+    public string? CurrentUserName { get; set; }
+
+    [Parameter, EditorRequired]
+    public IReadOnlyList<AvatarOption> Avatars { get; set; } = [];
+
+    [Parameter, EditorRequired]
+    public string SelectedAvatarFileName { get; set; } = string.Empty;
+
+    [Parameter]
+    public EventCallback<string> SelectedAvatarFileNameChanged { get; set; }
+}

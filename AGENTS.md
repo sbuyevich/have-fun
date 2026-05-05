@@ -84,12 +84,6 @@ design/                        Product spec, stage plans, and task notes
 - Validate required configuration and sentence data at startup.
 - Fail clearly when local configuration/data is invalid.
 
-## Implementation Workflow
-
-- Work stage by stage.
-- For Stage 1, complete tasks in `design/stages/Stage 1 - App Shell and Configuration/tasks`.
-- Do not implement behavior from later stages unless the current task explicitly requires it.
-- Keep Stage 1 free of name entry, player registration, dashboard routing, rounds, and gameplay.
 
 ## Verification
 

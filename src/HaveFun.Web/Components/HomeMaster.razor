@@ -1,0 +1,95 @@
+@using HaveFun.Core
+@namespace HaveFun.Web
+@inject IAvatarLibraryService AvatarLibrary
+
+<MudStack Spacing="4">
+    <MudPaper Class="pa-6" Elevation="0" Outlined="true">
+        <MudGrid Spacing="3" Class="align-center">
+            <MudItem xs="12" md="8">
+                <MudText Typo="Typo.h3">Master Home</MudText>
+                <MudText Typo="Typo.subtitle1" Color="Color.Secondary">
+                    Hi, @CurrentUserName. Share this address so players can join from the same local network.
+                </MudText>
+            </MudItem>
+            <MudItem xs="12" md="4" Class="d-flex justify-end">
+                <img class="home-avatar home-avatar--master"
+                     src="/images/master-avatar.svg"
+                     alt="Master avatar" />
+            </MudItem>
+        </MudGrid>
+    </MudPaper>
+
+    <MudGrid Spacing="3">
+        <MudItem xs="12" md="5">
+            <MudPaper Class="pa-4 h-100" Elevation="0" Outlined="true">
+                <MudText Typo="Typo.h6" Class="mb-2">Shared LAN URL</MudText>
+                <MudText Typo="Typo.body2" Color="Color.Secondary" Class="mb-3">
+                    Please enter this URL in your browser address bar.
+                </MudText>
+                <MudText Typo="Typo.body2"><code>@SharedJoinUrl</code></MudText>
+            </MudPaper>
+        </MudItem>
+
+        <MudItem xs="12" md="3">
+            <MudPaper Class="pa-4 h-100 home-qr-panel" Elevation="0" Outlined="true">
+                <MudText Typo="Typo.h6" Class="mb-3">QR Code</MudText>
+                <img class="home-qr-code"
+                     src="@QrCodeDataUri"
+                     alt="QR code for shared LAN URL" />
+            </MudPaper>
+        </MudItem>
+
+        <MudItem xs="12" md="4">
+            <MudPaper Class="pa-4 h-100" Elevation="0" Outlined="true">
+                <MudStack Row="true" AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween" Class="mb-3">
+                    <MudText Typo="Typo.h6">Players</MudText>
+                    <MudIconButton Icon="@Icons.Material.Filled.Refresh"
+                                   Color="Color.Primary"
+                                   Size="Size.Small"
+                                   OnClick="OnRefreshPlayers"
+                                   aria-label="Refresh players" />
+                </MudStack>
+
+                @if (Players.Count == 0)
+                {
+                    <MudText Typo="Typo.body2" Color="Color.Secondary">
+                        No players have joined yet.
+                    </MudText>
+                }
+                else
+                {
+                    <MudList T="PlayerSession" Dense="true">
+                        @foreach (var player in Players)
+                        {
+                            <MudListItem>
+                                <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+                                    <img class="home-avatar home-avatar--list"
+                                         src="@AvatarLibrary.GetAvatarUrl(player.AvatarFileName)"
+                                         alt="@($"{player.DisplayName} avatar")" />
+                                    <MudText Typo="Typo.body1">@player.DisplayName</MudText>
+                                </MudStack>
+                            </MudListItem>
+                        }
+                    </MudList>
+                }
+            </MudPaper>
+        </MudItem>
+    </MudGrid>
+</MudStack>
+
+@code {
+    [Parameter]
+    public string? CurrentUserName { get; set; }
+
+    [Parameter, EditorRequired]
+    public string SharedJoinUrl { get; set; } = string.Empty;
+
+    [Parameter, EditorRequired]
+    public string QrCodeDataUri { get; set; } = string.Empty;
+
+    [Parameter, EditorRequired]
+    public IReadOnlyList<PlayerSession> Players { get; set; } = [];
+
+    [Parameter]
+    public EventCallback OnRefreshPlayers { get; set; }
+}

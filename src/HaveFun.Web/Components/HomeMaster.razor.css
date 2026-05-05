@@ -17,28 +17,6 @@
     border-radius: 50%;
 }
 
-.home-avatar--choice {
-    width: 72px;
-    height: 72px;
-    border-radius: 50%;
-}
-
-.home-avatar-choice {
-    display: grid;
-    grid-template-columns: auto 1fr;
-    align-items: center;
-    gap: 8px;
-    min-height: 96px;
-    padding: 10px;
-    border: 1px solid rgba(17, 24, 39, 0.12);
-    border-radius: 8px;
-    cursor: pointer;
-}
-
-.home-avatar-choice span {
-    text-transform: capitalize;
-}
-
 .home-qr-panel {
     display: flex;
     flex-direction: column;

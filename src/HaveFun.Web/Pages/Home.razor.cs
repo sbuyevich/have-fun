@@ -5,8 +5,6 @@ namespace HaveFun.Web;
 
 public partial class Home : ComponentBase
 {
-    private const string MasterAvatarUrl = "/images/master-avatar.svg";
-
     private bool IsSessionChecked { get; set; }
 
     private StoredUserSession? CurrentUser { get; set; }
@@ -124,10 +122,5 @@ public partial class Home : ComponentBase
     private void RefreshPlayers()
     {
         Players = PlayerRegistry.GetPlayers();
-    }
-
-    private string GetAvatarUrl(string? avatarFileName)
-    {
-        return AvatarLibrary.GetAvatarUrl(avatarFileName);
     }
 }
