@@ -233,6 +233,115 @@ Restarting the server clears registered players, active game state, rounds, sent
 - `HaveFun.Web` contains UI, startup, SignalR hub, session storage integration, game-specific master dashboards, game-specific player pages, and static assets.
 - `HaveFun.Core` contains reusable models and in-memory services.
 
+## Implementation Stages
+
+### Stage 1: Home and Avatar Foundation
+
+Build `/home` as the shared post-registration landing page and add avatar support.
+
+Included:
+
+- Redirect both roles to `/home` after registration.
+- Show master Home with shared LAN URL, QR code, and joined players with avatars.
+- Show player Home with selected avatar, avatar selection, and waiting message.
+- Load avatar filenames from `assets/avatars`.
+- Store player avatar filename in session storage.
+
+Done when:
+
+- Master and players land on `/home`.
+- Master Home shows the LAN URL, QR code, and joined players.
+- Player Home can select/change avatar.
+
+### Stage 2: Multi-Game Shell and SignalR Navigation
+
+Add the shared game-selection model and real-time navigation layer.
+
+Included:
+
+- Represent available games in memory, starting with `Word Scramble`.
+- Show game entries in the role-aware menu.
+- Let only the master select games.
+- Add an explicit SignalR hub for game-selection messages.
+- Navigate master to the selected game's master dashboard.
+- Navigate players to the selected game's player page when SignalR message is received.
+
+Done when:
+
+- Master selection of `Word Scramble` moves the master and all connected players to the correct role-specific game pages.
+- Players can see game entries but cannot manually select them.
+
+### Stage 3: Word Scramble Game Page Split
+
+Move Word Scramble into game-specific master and player pages.
+
+Included:
+
+- Create a Word Scramble master dashboard.
+- Create or relocate the Word Scramble player page.
+- Keep player gameplay functionally as-is.
+- Remove Word Scramble-specific round controls from any generic dashboard.
+- Keep role/session guards on both game pages.
+
+Done when:
+
+- Word Scramble has its own master dashboard and player page.
+- The master dashboard is share-safe and does not reveal the active sentence while players are solving it.
+
+### Stage 4: Word Scramble Master Controls
+
+Implement the V1.0 master-controlled sentence flow.
+
+Included:
+
+- Add Start, Restart, and Finish controls to the Word Scramble master dashboard.
+- Add timer display.
+- Start begins the first or next sentence.
+- Restart resets from the first sentence and clears cumulative game score.
+- Finish ends the current sentence immediately.
+- Results remain visible after Finish until master clicks Start.
+
+Done when:
+
+- Master can run repeated Word Scramble sentences without restarting the app.
+- Finish no longer waits for timeout.
+
+### Stage 5: Word Scramble Scoring and Totals
+
+Add per-sentence scoring, partial scoring on Finish, and cumulative total score.
+
+Included:
+
+- Score submitted players from submitted sentence.
+- Score unsubmitted players from current partial collected sentence.
+- Show correct sentence only after the sentence is finished.
+- Track current sentence score and cumulative total score.
+- Add sortable results grid with player name, avatar, submission duration, current sentence score, and total score.
+- Default grid sort is player name.
+
+Done when:
+
+- Finish scores every registered player.
+- Total score increments by correct word count across sentences.
+- All result columns are sortable.
+
+### Stage 6: V1 Polish and Verification
+
+Clean up end-to-end behavior and verify V1.0 acceptance criteria.
+
+Included:
+
+- Confirm route guards, empty states, waiting states, and error messages.
+- Confirm QR code is master-only.
+- Confirm avatar fallback behavior.
+- Confirm server restart clears in-memory state.
+- Confirm no database, auth, cloud, or persistent leaderboard was added.
+- Build and manually verify multi-tab master/player flows.
+
+Done when:
+
+- V1.0 acceptance criteria pass end-to-end on one host with multiple browser tabs or LAN devices.
+
 ## Acceptance Criteria
 
 - Registration redirects both roles to `/home`.
