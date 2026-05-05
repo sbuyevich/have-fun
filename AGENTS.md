@@ -65,6 +65,7 @@ design/                        Product spec, stage plans, and task notes
 - Keep reusable UI components in a `Components` folder.
 - Do not let folder structure create deep namespaces by default.
 - Use the root `HaveFun.Web` namespace for most web classes and Razor components.
+- Use MudBlazor tags over plain css
 
 
 ## Configuration and Data
