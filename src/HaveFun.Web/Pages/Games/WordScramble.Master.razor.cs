@@ -4,7 +4,7 @@ using MudBlazor;
 
 namespace HaveFun.Web;
 
-public partial class Dashboard : ComponentBase, IAsyncDisposable
+public partial class WordScramble_Master : ComponentBase, IAsyncDisposable
 {
     private bool IsSessionChecked { get; set; }
 

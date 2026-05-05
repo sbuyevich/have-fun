@@ -4,7 +4,7 @@ using MudBlazor;
 
 namespace HaveFun.Web;
 
-public partial class WordScramble : ComponentBase, IAsyncDisposable
+public partial class WordScramble_Player : ComponentBase, IAsyncDisposable
 {
     private CancellationTokenSource? timerCancellation;
 

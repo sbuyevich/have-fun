@@ -12,8 +12,8 @@ public sealed class AvailableGameService : IAvailableGameService
             {
                 Id = WordScrambleGameId,
                 DisplayName = "Word Scramble",
-                MasterRoute = "/dashboard",
-                PlayerRoute = "/word-scramble"
+                MasterRoute = "/word-scramble/master",
+                PlayerRoute = "/word-scramble/player"
             }
         ];
     }
