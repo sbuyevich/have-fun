@@ -1,8 +1,10 @@
 @using HaveFun.Core
 @namespace HaveFun.Web
+@implements IDisposable
+@inject ICurrentUserStateService CurrentUserState
 
 <MudNavMenu>
-    @if (currentUser is not null)
+    @if (CurrentUserState.CurrentUser is { } currentUser)
     {
         <MudNavLink Href="/home"
                     Match="NavLinkMatch.All"
@@ -28,10 +30,10 @@
 </MudNavMenu>
 
 @code {
-    private StoredUserSession? currentUser;
-
-    [Inject]
-    private IUserSessionStorageService UserSessionStorage { get; set; } = default!;
+    protected override void OnInitialized()
+    {
+        CurrentUserState.Changed += HandleCurrentUserChanged;
+    }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -40,7 +42,16 @@
             return;
         }
 
-        currentUser = await UserSessionStorage.GetCurrentUserAsync();
-        StateHasChanged();
+        await CurrentUserState.InitializeAsync();
+    }
+
+    private void HandleCurrentUserChanged()
+    {
+        _ = InvokeAsync(StateHasChanged);
+    }
+
+    public void Dispose()
+    {
+        CurrentUserState.Changed -= HandleCurrentUserChanged;
     }
 }

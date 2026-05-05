@@ -33,6 +33,7 @@ builder.Services.AddSingleton<IAvatarLibraryService>(_ =>
 });
 builder.Services.AddSingleton<IQrCodeService, QrCodeService>();
 builder.Services.AddScoped<IUserSessionStorageService, UserSessionStorageService>();
+builder.Services.AddScoped<ICurrentUserStateService, CurrentUserStateService>();
 
 var app = builder.Build();
 

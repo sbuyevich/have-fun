@@ -33,7 +33,7 @@ public partial class Home : ComponentBase
     private IPlayerRegistryService PlayerRegistry { get; set; } = default!;
 
     [Inject]
-    private IUserSessionStorageService UserSessionStorage { get; set; } = default!;
+    private ICurrentUserStateService CurrentUserState { get; set; } = default!;
 
     [Inject]
     private IAvatarLibraryService AvatarLibrary { get; set; } = default!;
@@ -57,7 +57,8 @@ public partial class Home : ComponentBase
             return;
         }
 
-        var currentUser = await UserSessionStorage.GetCurrentUserAsync();
+        await CurrentUserState.InitializeAsync();
+        var currentUser = CurrentUserState.CurrentUser;
 
         if (currentUser is null)
         {
@@ -93,7 +94,7 @@ public partial class Home : ComponentBase
                 {
                     AvatarFileName = avatarFileName
                 };
-                await UserSessionStorage.SaveCurrentUserAsync(CurrentUser);
+                await CurrentUserState.SetCurrentUserAsync(CurrentUser);
             }
         }
 
@@ -116,7 +117,7 @@ public partial class Home : ComponentBase
         };
 
         PlayerRegistry.UpdatePlayerAvatar(CurrentUser.Name, avatarFileName);
-        await UserSessionStorage.SaveCurrentUserAsync(CurrentUser);
+        await CurrentUserState.SetCurrentUserAsync(CurrentUser);
     }
 
     private void RefreshPlayers()

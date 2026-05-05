@@ -1,6 +1,8 @@
 @namespace HaveFun.Web
 @inherits LayoutComponentBase
-@inject IUserSessionStorageService UserSessionStorage
+@implements IDisposable
+@inject ICurrentUserStateService CurrentUserState
+@inject IAvatarLibraryService AvatarLibrary
 
 <MudThemeProvider />
 <MudPopoverProvider />
@@ -17,13 +19,16 @@
                        aria-label="Navigation menu" />
         <MudText Typo="Typo.h6" Class="ml-2">HAVE FUN</MudText>
         <MudSpacer />
-        <MudText Typo="Typo.h6" Class="ml-2">Hi, @CurrentUserName.ToUpper()</MudText>
-        <MudSpacer />
-        <MudItem xs="12" md="4" Class="d-flex justify-end">
-            <img class="home-avatar home-avatar--master"
-                 src="/images/master-avatar.svg"
-                 alt="Master avatar" />
-        </MudItem>
+        @if (CurrentUserState.CurrentUser is not null)
+        {
+            <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+                <MudText Typo="Typo.h6">Hi, @CurrentUserName.ToUpperInvariant()</MudText>
+                <MudAvatar Size="Size.Medium" Class="app-bar-avatar">
+                    <img src="@CurrentUserAvatarUrl"
+                         alt="Current user avatar" />
+                </MudAvatar>
+            </MudStack>
+        }
     </MudAppBar>
 
     @if (isNavigationOpen)
@@ -50,9 +55,16 @@
 </div>
 
 @code {
-    private string CurrentUserName = string.Empty;
     private bool isNavigationOpen = true;
 
+    private string CurrentUserName => CurrentUserState.CurrentUser?.Name ?? string.Empty;
+
+    private string CurrentUserAvatarUrl => AvatarLibrary.GetAvatarUrl(CurrentUserState.CurrentUser?.AvatarFileName);
+
+    protected override void OnInitialized()
+    {
+        CurrentUserState.Changed += HandleCurrentUserChanged;
+    }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -60,12 +72,21 @@
         {
             return;
         }
-        CurrentUserName = (await UserSessionStorage.GetCurrentUserAsync())?.Name ?? string.Empty;
-        StateHasChanged();
+        await CurrentUserState.InitializeAsync();
     }
 
     private void ToggleNavigation()
     {
         isNavigationOpen = !isNavigationOpen;
+    }
+
+    private void HandleCurrentUserChanged()
+    {
+        _ = InvokeAsync(StateHasChanged);
+    }
+
+    public void Dispose()
+    {
+        CurrentUserState.Changed -= HandleCurrentUserChanged;
     }
 }

@@ -27,7 +27,7 @@ public partial class Register : ComponentBase
     private IPlayerRegistryService PlayerRegistry { get; set; } = default!;
 
     [Inject]
-    private IUserSessionStorageService UserSessionStorage { get; set; } = default!;
+    private ICurrentUserStateService CurrentUserState { get; set; } = default!;
 
     [Inject]
     private IAvatarLibraryService AvatarLibrary { get; set; } = default!;
@@ -60,7 +60,7 @@ public partial class Register : ComponentBase
 
         if (submittedName.Equals(GameOptions.Value.MasterName.Trim(), StringComparison.OrdinalIgnoreCase))
         {
-            await UserSessionStorage.SaveCurrentUserAsync(new StoredUserSession
+            await CurrentUserState.SetCurrentUserAsync(new StoredUserSession
             {
                 Name = submittedName,
                 Role = JoinRole.Master,
@@ -78,7 +78,7 @@ public partial class Register : ComponentBase
             return;
         }
 
-        await UserSessionStorage.SaveCurrentUserAsync(new StoredUserSession
+        await CurrentUserState.SetCurrentUserAsync(new StoredUserSession
         {
             Name = result.DisplayName,
             Role = JoinRole.Player,
