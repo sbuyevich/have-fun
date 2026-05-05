@@ -10,5 +10,7 @@ public interface IPlayerRegistryService
 
     bool TryGetPlayerByName(string submittedName, out PlayerSession? player);
 
+    bool UpdatePlayerAvatar(string submittedName, string avatarFileName);
+
     IReadOnlyList<PlayerSession> GetPlayers();
 }

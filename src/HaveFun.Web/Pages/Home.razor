@@ -1,59 +1,143 @@
 @page "/home"
+@using HaveFun.Core
 @namespace HaveFun.Web
 
 <PageTitle>Have-Fun Home</PageTitle>
 
-<MudStack Spacing="4">
-    <MudPaper Class="pa-6" Elevation="0" Outlined="true">
-        <MudStack Spacing="2">
-            <MudAlert Severity="Severity.Success" Variant="Variant.Outlined" Dense="true">
-                Local server running
-            </MudAlert>
-            <MudText Typo="Typo.h3">Have-Fun</MudText>
-            <MudText Typo="Typo.subtitle1" Color="Color.Secondary">
-                Host a browser game for friends on the same local network.
-            </MudText>
-        </MudStack>
-    </MudPaper>
-
-    <MudGrid Spacing="3">
-        <MudItem xs="12" md="6">
-            <MudPaper Class="pa-4 h-100" Elevation="0" Outlined="true">
-                <MudText Typo="Typo.h6" Class="mb-4">Join URLs</MudText>
-
-                <MudStack Spacing="3">
-                    <MudStack Spacing="1">
-                        <MudText Typo="Typo.subtitle2">Join from another device</MudText>
-                        @if (LanUrl is null)
-                        {
-                            <MudText Typo="Typo.body2" Color="Color.Secondary">
-                                LAN address was not detected. Check this computer's network connection.
-                            </MudText>
-                        }
-                        else
-                        {
-                            <MudPaper Class="pa-3" Elevation="0" Outlined="true">
-                                <MudText Typo="Typo.body2"><code>@LanUrl</code></MudText>
-                            </MudPaper>
-                        }
-                    </MudStack>
-                </MudStack>
-            </MudPaper>
-        </MudItem>
-
-        <MudItem xs="12" md="6">
-            <MudPaper Class="pa-4 h-100" Elevation="0" Outlined="true">
-                <MudText Typo="Typo.h6" Class="mb-4">App Status</MudText>
-                <MudList T="string" Dense="true">
-                    <MudListItem Icon="@Icons.Material.Filled.CheckCircle">Blazor InteractiveServer is configured.</MudListItem>
-                    <MudListItem Icon="@Icons.Material.Filled.CheckCircle">@SentenceCount predefined sentences loaded.</MudListItem>
-                    <MudListItem Icon="@Icons.Material.Filled.CheckCircle">No database or cloud service is required.</MudListItem>
-                </MudList>
-            </MudPaper>
-        </MudItem>
-    </MudGrid>
-
+@if (!IsSessionChecked)
+{
     <MudAlert Severity="Severity.Info" Variant="Variant.Outlined" Dense="true">
-        @SentenceCount predefined sentences are loaded. No database or cloud service is required.
+        Checking session
     </MudAlert>
-</MudStack>
+}
+else if (IsMaster)
+{
+    <MudStack Spacing="4">
+        <MudPaper Class="pa-6" Elevation="0" Outlined="true">
+            <MudGrid Spacing="3" Class="align-center">
+                <MudItem xs="12" md="8">
+                    <MudText Typo="Typo.h3">Master Home</MudText>
+                    <MudText Typo="Typo.subtitle1" Color="Color.Secondary">
+                        Hi, @CurrentUser?.Name. Share this address so players can join from the same local network.
+                    </MudText>
+                </MudItem>
+                <MudItem xs="12" md="4" Class="d-flex justify-end">
+                    <img class="home-avatar home-avatar--master"
+                         src="@MasterAvatarUrl"
+                         alt="Master avatar" />
+                </MudItem>
+            </MudGrid>
+        </MudPaper>
+
+        <MudGrid Spacing="3">
+            <MudItem xs="12" md="5">
+                <MudPaper Class="pa-4 h-100" Elevation="0" Outlined="true">
+                    <MudText Typo="Typo.h6" Class="mb-2">Shared LAN URL</MudText>
+                    <MudText Typo="Typo.body2" Color="Color.Secondary" Class="mb-3">
+                        Please enter this URL in your browser address bar.
+                    </MudText>
+                    <MudText Typo="Typo.body2"><code>@SharedJoinUrl</code></MudText>
+                </MudPaper>
+            </MudItem>
+
+            <MudItem xs="12" md="3">
+                <MudPaper Class="pa-4 h-100 home-qr-panel" Elevation="0" Outlined="true">
+                    <MudText Typo="Typo.h6" Class="mb-3">QR Code</MudText>
+                    <img class="home-qr-code"
+                         src="@QrCodeDataUri"
+                         alt="QR code for shared LAN URL" />
+                </MudPaper>
+            </MudItem>
+
+            <MudItem xs="12" md="4">
+                <MudPaper Class="pa-4 h-100" Elevation="0" Outlined="true">
+                    <MudStack Row="true" AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween" Class="mb-3">
+                        <MudText Typo="Typo.h6">Players</MudText>
+                        <MudIconButton Icon="@Icons.Material.Filled.Refresh"
+                                       Color="Color.Primary"
+                                       Size="Size.Small"
+                                       OnClick="RefreshPlayers"
+                                       aria-label="Refresh players" />
+                    </MudStack>
+
+                    @if (Players.Count == 0)
+                    {
+                        <MudText Typo="Typo.body2" Color="Color.Secondary">
+                            No players have joined yet.
+                        </MudText>
+                    }
+                    else
+                    {
+                        <MudList T="PlayerSession" Dense="true">
+                            @foreach (var player in Players)
+                            {
+                                <MudListItem>
+                                    <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+                                        <img class="home-avatar home-avatar--list"
+                                             src="@GetAvatarUrl(player.AvatarFileName)"
+                                             alt="@($"{player.DisplayName} avatar")" />
+                                        <MudText Typo="Typo.body1">@player.DisplayName</MudText>
+                                    </MudStack>
+                                </MudListItem>
+                            }
+                        </MudList>
+                    }
+                </MudPaper>
+            </MudItem>
+        </MudGrid>
+    </MudStack>
+}
+else if (IsPlayer)
+{
+    <MudStack Spacing="4">
+        <MudPaper Class="pa-6" Elevation="0" Outlined="true">
+            <MudGrid Spacing="3" Class="align-center">
+                <MudItem xs="12" md="8">
+                    <MudText Typo="Typo.h3">@CurrentUser?.Name</MudText>
+                    <MudText Typo="Typo.subtitle1" Color="Color.Secondary">
+                        Wait for Game Start
+                    </MudText>
+                </MudItem>
+                <MudItem xs="12" md="4" Class="d-flex justify-end">
+                    <img class="home-avatar home-avatar--master"
+                         src="@GetAvatarUrl(SelectedAvatarFileName)"
+                         alt="Selected avatar" />
+                </MudItem>
+            </MudGrid>
+        </MudPaper>
+
+        <MudPaper Class="pa-4" Elevation="0" Outlined="true">
+            <MudText Typo="Typo.h6" Class="mb-3">Choose Avatar</MudText>
+            <MudRadioGroup T="string"
+                           Value="@SelectedAvatarFileName"
+                           ValueChanged="SelectAvatarAsync">
+                <MudGrid Spacing="2">
+                    @foreach (var avatar in Avatars)
+                    {
+                        <MudItem xs="6" sm="4" md="3">
+                            <label class="home-avatar-choice">
+                                <MudRadio T="string" Value="@avatar.FileName" Color="Color.Primary" />
+                                <img class="home-avatar home-avatar--choice"
+                                     src="@avatar.Url"
+                                     alt="@avatar.DisplayName" />
+                                <span>@avatar.DisplayName</span>
+                            </label>
+                        </MudItem>
+                    }
+                </MudGrid>
+            </MudRadioGroup>
+        </MudPaper>
+    </MudStack>
+}
+else
+{
+    <MudAlert Severity="Severity.Error" Variant="Variant.Outlined">
+        This session has an unknown role. Join again to continue.
+    </MudAlert>
+    <MudButton Href="/"
+               Color="Color.Primary"
+               Variant="Variant.Filled"
+               StartIcon="@Icons.Material.Filled.Login">
+        Join
+    </MudButton>
+}

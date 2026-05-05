@@ -29,6 +29,9 @@ public partial class Register : ComponentBase
     [Inject]
     private IUserSessionStorageService UserSessionStorage { get; set; } = default!;
 
+    [Inject]
+    private IAvatarLibraryService AvatarLibrary { get; set; } = default!;
+
     protected override void OnInitialized()
     {
         var urls = JoinUrlProvider.GetJoinUrls(new Uri(NavigationManager.BaseUri));
@@ -62,7 +65,7 @@ public partial class Register : ComponentBase
                 Name = submittedName,
                 Role = JoinRole.Master,
             });
-            NavigationManager.NavigateTo("/dashboard");
+            NavigationManager.NavigateTo("/home");
             return;
         }
 
@@ -79,8 +82,9 @@ public partial class Register : ComponentBase
         {
             Name = result.DisplayName,
             Role = JoinRole.Player,
+            AvatarFileName = AvatarLibrary.DefaultPlayerAvatarFileName,
         });
 
-        NavigationManager.NavigateTo("/player");
+        NavigationManager.NavigateTo("/home");
     }
 }

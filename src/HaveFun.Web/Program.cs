@@ -25,6 +25,13 @@ builder.Services.AddSingleton<ISentenceLibraryService>(_ =>
 builder.Services.AddSingleton<IPlayerRegistryService, PlayerRegistryService>();
 builder.Services.AddSingleton<IGameStateService, GameStateService>();
 builder.Services.AddSingleton<IJoinUrlProviderService, JoinUrlProviderService>();
+builder.Services.AddSingleton<IAvatarLibraryService>(_ =>
+{
+    var avatarFolderPath = Path.Combine(builder.Environment.ContentRootPath, "assets", "avatars");
+
+    return new AvatarLibraryService(avatarFolderPath);
+});
+builder.Services.AddSingleton<IQrCodeService, QrCodeService>();
 builder.Services.AddScoped<IUserSessionStorageService, UserSessionStorageService>();
 
 var app = builder.Build();
@@ -46,6 +53,24 @@ app.UseHttpsRedirection();
 app.UseAntiforgery();
 
 app.MapStaticAssets();
+app.MapGet("/assets/avatars/{fileName}", (string fileName, IAvatarLibraryService avatarLibrary) =>
+{
+    if (!avatarLibrary.TryGetAvatarFilePath(fileName, out var filePath) || filePath is null)
+    {
+        return Results.NotFound();
+    }
+
+    var contentType = Path.GetExtension(filePath).ToLowerInvariant() switch
+    {
+        ".svg" => "image/svg+xml",
+        ".png" => "image/png",
+        ".jpg" or ".jpeg" => "image/jpeg",
+        ".webp" => "image/webp",
+        _ => "application/octet-stream"
+    };
+
+    return Results.File(filePath, contentType);
+});
 app.MapRazorComponents<HaveFun.Web.App>()
     .AddInteractiveServerRenderMode();
 

@@ -2,6 +2,7 @@ namespace HaveFun.Core;
 
 public sealed class PlayerRegistryService : IPlayerRegistryService
 {
+    private const string DefaultAvatarFileName = "player-1.svg";
     private readonly object syncRoot = new();
     private readonly Dictionary<Guid, PlayerSession> playersById = [];
     private readonly Dictionary<string, Guid> playerIdsByName = new(StringComparer.OrdinalIgnoreCase);
@@ -26,6 +27,7 @@ public sealed class PlayerRegistryService : IPlayerRegistryService
             {
                 Id = Guid.NewGuid(),
                 DisplayName = displayName,
+                AvatarFileName = DefaultAvatarFileName,
                 JoinedAt = DateTimeOffset.UtcNow
             };
 
@@ -78,6 +80,33 @@ public sealed class PlayerRegistryService : IPlayerRegistryService
             }
 
             return playersById.TryGetValue(playerId, out player);
+        }
+    }
+
+    public bool UpdatePlayerAvatar(string submittedName, string avatarFileName)
+    {
+        var displayName = submittedName.Trim();
+        var normalizedAvatarFileName = avatarFileName.Trim();
+
+        if (string.IsNullOrWhiteSpace(displayName) || string.IsNullOrWhiteSpace(normalizedAvatarFileName))
+        {
+            return false;
+        }
+
+        lock (syncRoot)
+        {
+            if (!playerIdsByName.TryGetValue(displayName, out var playerId) ||
+                !playersById.TryGetValue(playerId, out var player))
+            {
+                return false;
+            }
+
+            playersById[playerId] = player with
+            {
+                AvatarFileName = normalizedAvatarFileName
+            };
+
+            return true;
         }
     }
 

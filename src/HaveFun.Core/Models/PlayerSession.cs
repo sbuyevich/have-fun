@@ -6,5 +6,7 @@ public sealed record PlayerSession
 
     public required string DisplayName { get; init; }
 
+    public required string AvatarFileName { get; init; }
+
     public required DateTimeOffset JoinedAt { get; init; }
 }
