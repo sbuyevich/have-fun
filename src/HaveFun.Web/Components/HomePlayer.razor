@@ -1,5 +1,4 @@
 @namespace HaveFun.Web
-@inject IAvatarLibraryService AvatarLibrary
 
 <MudStack Spacing="4">
     <MudPaper Class="pa-6" Elevation="0" Outlined="true">
@@ -40,17 +39,3 @@
         </MudRadioGroup>
     </MudPaper>
 </MudStack>
-
-@code {
-    [Parameter]
-    public string? CurrentUserName { get; set; }
-
-    [Parameter, EditorRequired]
-    public IReadOnlyList<AvatarOption> Avatars { get; set; } = [];
-
-    [Parameter, EditorRequired]
-    public string SelectedAvatarFileName { get; set; } = string.Empty;
-
-    [Parameter]
-    public EventCallback<string> SelectedAvatarFileNameChanged { get; set; }
-}

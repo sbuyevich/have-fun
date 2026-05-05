@@ -28,6 +28,7 @@ Use these files as the source of truth:
 - Do not add cloud services, public hosting, accounts, passwords, or authentication for V1.
 - Keep reusable game/configuration/sentence logic in `HaveFun.Core`.
 - Keep Blazor pages, startup, app settings, and web-specific services in `HaveFun.Web`.
+- Create separate code behind .cs file for each .razor
 - Prefer typed models and services over ad hoc JSON or string handling.
 - Keep Razor markup and code-behind in separate files when a component needs non-trivial logic.
 - Add reusable services to `HaveFun.Core`.
