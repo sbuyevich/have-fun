@@ -1,7 +1,12 @@
 @using HaveFun.Core
+@using Microsoft.AspNetCore.SignalR
 @namespace HaveFun.Web
 @implements IDisposable
 @inject ICurrentUserStateService CurrentUserState
+@inject IAvailableGameService AvailableGames
+@inject IActiveGameStateService ActiveGameState
+@inject IHubContext<GameSelectionHub> GameSelectionHubContext
+@inject NavigationManager NavigationManager
 
 <MudNavMenu>
     @if (CurrentUserState.CurrentUser is { } currentUser)
@@ -12,18 +17,13 @@
             Home
         </MudNavLink>
 
-        @if (currentUser.Role == JoinRole.Master)
+        @foreach (var game in AvailableGames.Games)
         {
-            <MudNavLink Href="/dashboard"
-                        Icon="@Icons.Material.Filled.Dashboard">
-                Dashboard
-            </MudNavLink>
-        }
-        else if (currentUser.Role == JoinRole.Player)
-        {
-            <MudNavLink Href="/player"
-                        Icon="@Icons.Material.Filled.SportsEsports">
-                Player
+            <MudNavLink Href="@GetGameHref(currentUser, game)"
+                        Icon="@Icons.Material.Filled.SportsEsports"
+                        Disabled="@(currentUser.Role != JoinRole.Master)"
+                        OnClick="@(() => SelectGameAsync(currentUser, game))">
+                @game.DisplayName
             </MudNavLink>
         }
     }
@@ -48,6 +48,34 @@
     private void HandleCurrentUserChanged()
     {
         _ = InvokeAsync(StateHasChanged);
+    }
+
+    private static string? GetGameHref(StoredUserSession currentUser, AvailableGame game)
+    {
+        return currentUser.Role == JoinRole.Master ? game.MasterRoute : null;
+    }
+
+    private async Task SelectGameAsync(StoredUserSession currentUser, AvailableGame game)
+    {
+        if (currentUser.Role != JoinRole.Master)
+        {
+            return;
+        }
+
+        if (!ActiveGameState.TrySelectGame(game.Id, out var selectedGame) || selectedGame is null)
+        {
+            return;
+        }
+
+        var message = new GameSelectedMessage
+        {
+            GameId = selectedGame.Id,
+            DisplayName = selectedGame.DisplayName,
+            PlayerRoute = selectedGame.PlayerRoute
+        };
+
+        await GameSelectionHubContext.Clients.All.SendAsync(GameSelectionHub.GameSelectedMethod, message);
+        NavigationManager.NavigateTo(selectedGame.MasterRoute);
     }
 
     public void Dispose()

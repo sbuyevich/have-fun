@@ -24,6 +24,8 @@ builder.Services.AddSingleton<ISentenceLibraryService>(_ =>
 });
 builder.Services.AddSingleton<IPlayerRegistryService, PlayerRegistryService>();
 builder.Services.AddSingleton<IGameStateService, GameStateService>();
+builder.Services.AddSingleton<IAvailableGameService, AvailableGameService>();
+builder.Services.AddSingleton<IActiveGameStateService, ActiveGameStateService>();
 builder.Services.AddSingleton<IJoinUrlProviderService, JoinUrlProviderService>();
 builder.Services.AddSingleton<IAvatarLibraryService>(_ =>
 {
@@ -72,6 +74,7 @@ app.MapGet("/assets/avatars/{fileName}", (string fileName, IAvatarLibraryService
 
     return Results.File(filePath, contentType);
 });
+app.MapHub<GameSelectionHub>(GameSelectionHub.Route);
 app.MapRazorComponents<HaveFun.Web.App>()
     .AddInteractiveServerRenderMode();
 
