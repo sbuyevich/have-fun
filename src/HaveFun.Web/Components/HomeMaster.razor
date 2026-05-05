@@ -4,83 +4,67 @@
 <MudStack Spacing="4">
     <MudItem xs="12" md="8">
         <MudText Typo="Typo.h4" Color="Color.Primary">
-            Welcome to Have-Fun!
+            Welcome to Game
         </MudText>
     </MudItem>
-    <MudPaper Class="pa-6" Elevation="0" Outlined="true">
-        <MudGrid Spacing="3" Class="align-center">
-            <MudStack md="6">
-                <MudText Typo="Typo.body2" Color="Color.Secondary" Class="mb-3 mt-0">
-                    Please enter this URL in your browser address bar:
-                </MudText>
-                <MudText Typo="Typo.body2"><code>@SharedJoinUrl</code></MudText>
-            </MudStack>
-            <MudSpacer />
-            <MudStack md="6">
-                <MudText Typo="Typo.body2" Color="Color.Secondary" Class="mb-3">
-                    Or scan the QR code below with your mobile device:
-                </MudText>
-                <img class="home-qr-code"
-                     src="@QrCodeDataUri"
-                     alt="QR code for shared LAN URL" />
-            </MudStack>
+    <MudPaper Class="pa-2">
+        <MudGrid AlignItems="AlignItems.FlexStart">
+            <MudItem xs="12" md="6">
+                <MudStack>
+                    <MudText Typo="Typo.body2" Color="Color.Secondary">
+                        Please enter this URL in your browser address bar:
+                    </MudText>
+
+                    <MudText Typo="Typo.body2">
+                        <code>@SharedJoinUrl</code>
+                    </MudText>
+                </MudStack>
+            </MudItem>
+
+            <MudItem xs="12" md="6">
+                <MudStack>
+                    <MudText Typo="Typo.body2" Color="Color.Secondary">
+                        Or scan the QR code below with your mobile device:
+                    </MudText>
+                    <img class="home-qr-code"
+                         src="@QrCodeDataUri"
+                         alt="QR code for shared LAN URL" />
+                </MudStack>
+            </MudItem>
         </MudGrid>
     </MudPaper>
 
-    <MudGrid Spacing="3">
-        <MudItem xs="12" md="5">
-            <MudPaper Class="pa-4 h-100" Elevation="0" Outlined="true">
-                <MudText Typo="Typo.h6" Class="mb-2">Shared LAN URL</MudText>
-                <MudText Typo="Typo.body2" Color="Color.Secondary" Class="mb-3">
-                    Please enter this URL in your browser address bar.
-                </MudText>
-                <MudText Typo="Typo.body2"><code>@SharedJoinUrl</code></MudText>
-            </MudPaper>
-        </MudItem>
+    <MudPaper Class="pa-4 h-100" Elevation="0" Outlined="true">
+        <MudStack Row="true" AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween" Class="mb-3">
+            <MudText Typo="Typo.h6">Players</MudText>
+            <MudIconButton Icon="@Icons.Material.Filled.Refresh"
+                           Color="Color.Primary"
+                           Size="Size.Small"
+                           OnClick="OnRefreshPlayers"
+                           aria-label="Refresh players" />
+        </MudStack>
 
-        <MudItem xs="12" md="3">
-            <MudPaper Class="pa-4 h-100 home-qr-panel" Elevation="0" Outlined="true">
-                <MudText Typo="Typo.h6" Class="mb-3">QR Code</MudText>
-                <img class="home-qr-code"
-                     src="@QrCodeDataUri"
-                     alt="QR code for shared LAN URL" />
-            </MudPaper>
-        </MudItem>
-
-        <MudItem xs="12" md="4">
-            <MudPaper Class="pa-4 h-100" Elevation="0" Outlined="true">
-                <MudStack Row="true" AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween" Class="mb-3">
-                    <MudText Typo="Typo.h6">Players</MudText>
-                    <MudIconButton Icon="@Icons.Material.Filled.Refresh"
-                                   Color="Color.Primary"
-                                   Size="Size.Small"
-                                   OnClick="OnRefreshPlayers"
-                                   aria-label="Refresh players" />
-                </MudStack>
-
-                @if (Players.Count == 0)
+        @if (Players.Count == 0)
+        {
+            <MudText Typo="Typo.body2" Color="Color.Secondary">
+                No players have joined yet.
+            </MudText>
+        }
+        else
+        {
+            <MudList T="PlayerSession" Dense="true">
+                @foreach (var player in Players)
                 {
-                    <MudText Typo="Typo.body2" Color="Color.Secondary">
-                        No players have joined yet.
-                    </MudText>
+                    <MudListItem>
+                        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+                            <img class="home-avatar home-avatar--list"
+                                 src="@AvatarLibrary.GetAvatarUrl(player.AvatarFileName)"
+                                 alt="@($"{player.DisplayName} avatar")" />
+                            <MudText Typo="Typo.body1">@player.DisplayName</MudText>
+                        </MudStack>
+                    </MudListItem>
                 }
-                else
-                {
-                    <MudList T="PlayerSession" Dense="true">
-                        @foreach (var player in Players)
-                        {
-                            <MudListItem>
-                                <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
-                                    <img class="home-avatar home-avatar--list"
-                                         src="@AvatarLibrary.GetAvatarUrl(player.AvatarFileName)"
-                                         alt="@($"{player.DisplayName} avatar")" />
-                                    <MudText Typo="Typo.body1">@player.DisplayName</MudText>
-                                </MudStack>
-                            </MudListItem>
-                        }
-                    </MudList>
-                }
-            </MudPaper>
-        </MudItem>
-    </MudGrid>
+            </MudList>
+        }
+    </MudPaper>
 </MudStack>
