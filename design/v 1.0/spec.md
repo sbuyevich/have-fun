@@ -76,6 +76,7 @@ Players can:
 Required UI:
 
 - Shared LAN URL.
+- QR code for the shared LAN URL.
 - Prompt text telling users to enter the shared URL in a browser address bar.
 - Joined player list.
 - Player avatars.
@@ -83,6 +84,8 @@ Required UI:
 Behavior:
 
 - Master Home updates from in-memory player registry state.
+- The QR code is shown only on Master Home.
+- The QR code encodes the same shared LAN URL shown as text.
 - The master does not choose an avatar.
 - The player list shows self-registered players only.
 
@@ -234,6 +237,7 @@ Restarting the server clears registered players, active game state, rounds, sent
 
 - Registration redirects both roles to `/home`.
 - Master Home shows the shared LAN URL and joined players with avatars.
+- Master Home shows a QR code for the shared LAN URL.
 - Player Home shows avatar selection and a waiting-for-game-start message.
 - Player avatar filename persists in browser session storage.
 - Menu shows `Word Scramble` for both roles.
@@ -252,7 +256,6 @@ Restarting the server clears registered players, active game state, rounds, sent
 ## Future Ideas
 
 - Add more games.
-- Add QR code for the shared LAN URL.
 - Add browser-created custom sentences.
 - Add undo for Word Scramble word selection.
 - Add persistent game history.
