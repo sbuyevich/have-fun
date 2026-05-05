@@ -130,8 +130,15 @@ public sealed class QrCodeService : IQrCodeService
 
         for (var index = 0; index < Size; index++)
         {
-            SetFunctionModule(modules, reserved, 6, index, index % 2 == 0);
-            SetFunctionModule(modules, reserved, index, 6, index % 2 == 0);
+            if (!reserved[6, index])
+            {
+                SetFunctionModule(modules, reserved, 6, index, index % 2 == 0);
+            }
+
+            if (!reserved[index, 6])
+            {
+                SetFunctionModule(modules, reserved, index, 6, index % 2 == 0);
+            }
         }
 
         SetFunctionModule(modules, reserved, 8, Size - 8, true);

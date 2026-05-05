@@ -1,5 +1,6 @@
 @namespace HaveFun.Web
 @inherits LayoutComponentBase
+@inject IUserSessionStorageService UserSessionStorage
 
 <MudThemeProvider />
 <MudPopoverProvider />
@@ -15,6 +16,14 @@
                        OnClick="ToggleNavigation"
                        aria-label="Navigation menu" />
         <MudText Typo="Typo.h6" Class="ml-2">HAVE FUN</MudText>
+        <MudSpacer />
+        <MudText Typo="Typo.h6" Class="ml-2">Hi, @CurrentUserName.ToUpper()</MudText>
+        <MudSpacer />
+        <MudItem xs="12" md="4" Class="d-flex justify-end" Style="width:50px;">
+            <img class="home-avatar home-avatar--master"
+                 src="/images/master-avatar.svg"
+                 alt="Master avatar" />
+        </MudItem>
     </MudAppBar>
 
     @if (isNavigationOpen)
@@ -41,7 +50,19 @@
 </div>
 
 @code {
+    private string CurrentUserName = string.Empty;
     private bool isNavigationOpen = true;
+
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender)
+        {
+            return;
+        }
+        CurrentUserName = (await UserSessionStorage.GetCurrentUserAsync())?.Name ?? string.Empty;
+        StateHasChanged();
+    }
 
     private void ToggleNavigation()
     {
