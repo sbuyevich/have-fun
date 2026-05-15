@@ -34,9 +34,7 @@ public partial class Register : ComponentBase
 
     protected override void OnInitialized()
     {
-        var urls = JoinUrlProvider.GetJoinUrls(new Uri(NavigationManager.BaseUri));
-
-        LanUrl = urls.LanUrl;
+        LanUrl = JoinUrlProvider.GetJoinUrl(new Uri(NavigationManager.BaseUri));
     }
 
     private async Task JoinAsync()

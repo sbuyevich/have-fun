@@ -54,9 +54,7 @@ public partial class WordScramble_Master : ComponentBase, IAsyncDisposable
 
     protected override void OnInitialized()
     {
-        var urls = JoinUrlProvider.GetJoinUrls(new Uri(NavigationManager.BaseUri));
-
-        LanUrl = urls.LanUrl ?? urls.LocalhostUrl;
+        LanUrl = JoinUrlProvider.GetJoinUrl(new Uri(NavigationManager.BaseUri));
         Sentences = SentenceLibrary.Sentences;
         RefreshPlayers();
         RefreshSubmissionProgress();

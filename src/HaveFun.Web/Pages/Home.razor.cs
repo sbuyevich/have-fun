@@ -43,9 +43,9 @@ public partial class Home : ComponentBase
 
     protected override void OnInitialized()
     {
-        var urls = JoinUrlProvider.GetJoinUrls(new Uri(NavigationManager.BaseUri));
+        var baseUri = new Uri(NavigationManager.BaseUri);
 
-        SharedJoinUrl = urls.LanUrl ?? urls.LocalhostUrl;
+        SharedJoinUrl = JoinUrlProvider.GetJoinUrl(baseUri) ?? baseUri.GetLeftPart(UriPartial.Authority);
         QrCodeDataUri = QrCode.CreateSvgDataUri(SharedJoinUrl);
         Avatars = AvatarLibrary.Avatars;
     }
