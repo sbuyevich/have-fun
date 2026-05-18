@@ -46,7 +46,7 @@ public partial class WaitingRoom : ComponentBase, IAsyncDisposable
 
         if (GameState.CurrentRound is not null)
         {
-            NavigationManager.NavigateTo("/word-scramble", replace: true);
+            NavigationManager.NavigateTo("/player-word-scrambler", replace: true);
             return;
         }
 
@@ -77,7 +77,7 @@ public partial class WaitingRoom : ComponentBase, IAsyncDisposable
 
     private void HandleCurrentRoundChanged(CurrentRound round)
     {
-        _ = InvokeAsync(() => NavigationManager.NavigateTo("/word-scramble", replace: true));
+        _ = InvokeAsync(() => NavigationManager.NavigateTo("/player-word-scrambler", replace: true));
     }
 
     private async Task RedirectToRegisterAsync()

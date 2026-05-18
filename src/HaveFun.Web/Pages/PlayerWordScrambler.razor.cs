@@ -4,7 +4,7 @@ using MudBlazor;
 
 namespace HaveFun.Web;
 
-public partial class WordScramble : ComponentBase, IAsyncDisposable
+public partial class PlayerWordScrambler : ComponentBase, IAsyncDisposable
 {
     private CancellationTokenSource? timerCancellation;
 
@@ -54,6 +54,12 @@ public partial class WordScramble : ComponentBase, IAsyncDisposable
         }
 
         var currentUser = await UserSessionStorageService.GetCurrentUserAsync();
+
+        if (currentUser?.Role == Role.Host)
+        {
+            NavigationManager.NavigateTo("/host-word-scrambler", replace: true);
+            return;
+        }
 
         if (currentUser?.Role != Role.Player)
         {

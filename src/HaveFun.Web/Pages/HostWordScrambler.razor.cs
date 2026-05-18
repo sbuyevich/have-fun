@@ -4,7 +4,7 @@ using MudBlazor;
 
 namespace HaveFun.Web;
 
-public partial class Dashboard : ComponentBase, IAsyncDisposable
+public partial class HostWordScrambler : ComponentBase, IAsyncDisposable
 {
     private bool IsSessionChecked { get; set; }
 
@@ -89,7 +89,7 @@ public partial class Dashboard : ComponentBase, IAsyncDisposable
 
         if (currentUser?.Role != Role.Host)
         {
-            ErrorMessage = "Open the host Home page before using the dashboard.";
+            ErrorMessage = "Open the host Home page before using Host Word Scrambler.";
         }
         else
         {
