@@ -4,7 +4,7 @@ using MudBlazor;
 
 namespace HaveFun.Web;
 
-public partial class HostWordScrambler : ComponentBase, IAsyncDisposable
+public partial class HostSentenceScrambler : ComponentBase, IAsyncDisposable
 {
     private bool IsSessionChecked { get; set; }
 
@@ -22,11 +22,11 @@ public partial class HostWordScrambler : ComponentBase, IAsyncDisposable
 
     private IReadOnlyList<SentenceDefinition> Sentences { get; set; } = [];
 
-    private string SelectedGame { get; set; } = WordScrambleGameName;
+    private string SelectedGame { get; set; } = SentenceScrambleGameName;
 
-    private static IReadOnlyList<string> AvailableGames { get; } = [WordScrambleGameName];
+    private static IReadOnlyList<string> AvailableGames { get; } = [SentenceScrambleGameName];
 
-    private const string WordScrambleGameName = "Word Scramble";
+    private const string SentenceScrambleGameName = "Sentence Scramble";
 
     private int SelectedSentenceIndex { get; set; } = -1;
 
@@ -89,7 +89,7 @@ public partial class HostWordScrambler : ComponentBase, IAsyncDisposable
 
         if (currentUser?.Role != Role.Host)
         {
-            ErrorMessage = "Open the host Home page before using Host Word Scrambler.";
+            ErrorMessage = "Open the host Home page before using Host Sentence Scrambler.";
         }
         else
         {

@@ -1,8 +1,8 @@
-@page "/host-word-scrambler"
+@page "/host-sentence-scrambler"
 @using HaveFun.Core
 @namespace HaveFun.Web
 
-<PageTitle>Host Word Scrambler</PageTitle>
+<PageTitle>Host Sentence Scrambler</PageTitle>
 
 @if (!IsSessionChecked)
 {
@@ -27,9 +27,9 @@ else
     <MudStack Spacing="4">
         <MudPaper Class="pa-6" Elevation="0" Outlined="true">
             <MudStack Spacing="2">
-                <MudText Typo="Typo.h3">Host Word Scrambler</MudText>
+                <MudText Typo="Typo.h5">Sentence Scrambler Game</MudText>
                 <MudText Typo="Typo.subtitle1" Color="Color.Secondary">
-                    Welcome, @HostName.
+                    Rearrange sentences below to make a correct sentence.
                 </MudText>
             </MudStack>
         </MudPaper>
@@ -68,7 +68,7 @@ else
                             @CurrentRound.TimeLimitInSeconds seconds
                         </MudText>
                         <MudText Typo="Typo.caption" Color="Color.Secondary" Class="d-block">
-                            @CurrentRound.ShuffledWords.Count shuffled words ready
+                            @CurrentRound.ShuffledSentences.Count shuffled sentences ready
                         </MudText>
                     }
                 </MudPaper>

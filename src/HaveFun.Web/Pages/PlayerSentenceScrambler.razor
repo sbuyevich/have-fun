@@ -1,8 +1,8 @@
-@page "/player-word-scrambler"
+@page "/player-sentence-scrambler"
 @layout RegisterLayout
 @namespace HaveFun.Web
 
-<PageTitle>Player Word Scrambler</PageTitle>
+<PageTitle>Player Sentence Scrambler</PageTitle>
 
 <MudStack Spacing="4" Class="pa-4">
     @if (!IsSessionChecked)
@@ -27,9 +27,9 @@
     {
         <MudPaper Class="pa-6" Elevation="0" Outlined="true">
             <MudStack Spacing="2">
-                <MudText Typo="Typo.h3">@DisplayName</MudText>
+                <MudText Typo="Typo.h5">Sentence Scrambler Game</MudText>
                 <MudText Typo="Typo.subtitle1" Color="Color.Secondary">
-                    Word Scramble
+                    Rearrange available sentences below to make a correct sentence.
                 </MudText>
             </MudStack>
         </MudPaper>
@@ -62,9 +62,9 @@
 
             <MudItem xs="12" md="4">
                 <MudPaper Class="pa-4 h-100" Elevation="0" Outlined="true">
-                    <MudText Typo="Typo.h6" Class="mb-4">Words</MudText>
+                    <MudText Typo="Typo.h6" Class="mb-4">Sentences</MudText>
                     <MudText Typo="Typo.body2" Color="Color.Secondary">
-                        @AvailableWordCount available
+                        @AvailableSentenceCount available
                     </MudText>
                 </MudPaper>
             </MudItem>
@@ -72,19 +72,19 @@
 
         <MudPaper Class="pa-4" Elevation="0" Outlined="true">
             <MudText Typo="Typo.h6" Class="mb-4">Collected Sentence</MudText>
-            @if (PlayerRoundState is null || PlayerRoundState.CollectedWords.Count == 0)
+            @if (PlayerRoundState is null || PlayerRoundState.CollectedSentences.Count == 0)
             {
                 <MudText Typo="Typo.body2" Color="Color.Secondary">
-                    Click words below to build your sentence.
+                    Click sentences below to build your sentence.
                 </MudText>
             }
             else
             {
                 <MudStack Row="true" Spacing="2" Class="flex-wrap">
-                    @foreach (var word in PlayerRoundState.CollectedWords)
+                    @foreach (var sentence in PlayerRoundState.CollectedSentences)
                     {
                         <MudChip T="string" Color="Color.Secondary" Variant="Variant.Filled">
-                            @word.Text
+                            @sentence.Text
                         </MudChip>
                     }
                 </MudStack>
@@ -104,22 +104,22 @@
         else
         {
             <MudPaper Class="pa-4" Elevation="0" Outlined="true">
-                <MudText Typo="Typo.h6" Class="mb-4">Available Words</MudText>
-                @if (PlayerRoundState is null || PlayerRoundState.AvailableWords.Count == 0)
+                <MudText Typo="Typo.h6" Class="mb-4">Available Sentences</MudText>
+                @if (PlayerRoundState is null || PlayerRoundState.AvailableSentences.Count == 0)
                 {
                     <MudText Typo="Typo.body2" Color="Color.Secondary">
-                        All words are selected. Submit when ready.
+                        All sentences are selected. Submit when ready.
                     </MudText>
                 }
                 else
                 {
                     <MudStack Row="true" Spacing="2" Class="flex-wrap">
-                        @foreach (var word in PlayerRoundState.AvailableWords)
+                        @foreach (var sentence in PlayerRoundState.AvailableSentences)
                         {
                             <MudButton Color="Color.Primary"
                                        Variant="Variant.Outlined"
-                                       OnClick="@(() => SelectWord(word.Id))">
-                                @word.Text
+                                       OnClick="@(() => SelectSentence(sentence.Id))">
+                                @sentence.Text
                             </MudButton>
                         }
                     </MudStack>

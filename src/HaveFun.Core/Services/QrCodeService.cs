@@ -7,8 +7,8 @@ public sealed class QrCodeService : IQrCodeService
 {
     private const int Version = 3;
     private const int Size = Version * 4 + 17;
-    private const int DataCodewordCount = 55;
-    private const int ErrorCorrectionCodewordCount = 15;
+    private const int DataCodesentenceCount = 55;
+    private const int ErrorCorrectionCodesentenceCount = 15;
 
     public string CreateSvgDataUri(string text)
     {
@@ -26,21 +26,21 @@ public sealed class QrCodeService : IQrCodeService
 
     private static bool[,] Encode(string text)
     {
-        var dataCodewords = CreateDataCodewords(text);
-        var errorCorrectionCodewords = CreateErrorCorrectionCodewords(dataCodewords, ErrorCorrectionCodewordCount);
-        var allCodewords = dataCodewords.Concat(errorCorrectionCodewords).ToArray();
+        var dataCodesentences = CreateDataCodesentences(text);
+        var errorCorrectionCodesentences = CreateErrorCorrectionCodesentences(dataCodesentences, ErrorCorrectionCodesentenceCount);
+        var allCodesentences = dataCodesentences.Concat(errorCorrectionCodesentences).ToArray();
         var modules = new bool[Size, Size];
         var reserved = new bool[Size, Size];
 
         DrawFunctionPatterns(modules, reserved);
-        DrawCodewords(modules, reserved, allCodewords);
+        DrawCodesentences(modules, reserved, allCodesentences);
         ApplyMask(modules, reserved);
         DrawFormatBits(modules);
 
         return modules;
     }
 
-    private static byte[] CreateDataCodewords(string text)
+    private static byte[] CreateDataCodesentences(string text)
     {
         var textBytes = Encoding.UTF8.GetBytes(text);
 
@@ -58,7 +58,7 @@ public sealed class QrCodeService : IQrCodeService
             AppendBits(bits, textByte, 8);
         }
 
-        var remainingBits = DataCodewordCount * 8 - bits.Count;
+        var remainingBits = DataCodesentenceCount * 8 - bits.Count;
         AppendBits(bits, 0, Math.Min(4, remainingBits));
 
         while (bits.Count % 8 != 0)
@@ -66,29 +66,29 @@ public sealed class QrCodeService : IQrCodeService
             bits.Add(false);
         }
 
-        var codewords = new List<byte>();
+        var codesentences = new List<byte>();
 
         for (var index = 0; index < bits.Count; index += 8)
         {
-            codewords.Add((byte)GetBitsValue(bits, index, 8));
+            codesentences.Add((byte)GetBitsValue(bits, index, 8));
         }
 
-        for (var padByte = 0xec; codewords.Count < DataCodewordCount; padByte ^= 0xec ^ 0x11)
+        for (var padByte = 0xec; codesentences.Count < DataCodesentenceCount; padByte ^= 0xec ^ 0x11)
         {
-            codewords.Add((byte)padByte);
+            codesentences.Add((byte)padByte);
         }
 
-        return codewords.ToArray();
+        return codesentences.ToArray();
     }
 
-    private static byte[] CreateErrorCorrectionCodewords(byte[] dataCodewords, int degree)
+    private static byte[] CreateErrorCorrectionCodesentences(byte[] dataCodesentences, int degree)
     {
         var generator = CreateGeneratorPolynomial(degree);
         var remainder = new byte[degree];
 
-        foreach (var dataCodeword in dataCodewords)
+        foreach (var dataCodesentence in dataCodesentences)
         {
-            var factor = dataCodeword ^ remainder[0];
+            var factor = dataCodesentence ^ remainder[0];
             Array.Copy(remainder, 1, remainder, 0, degree - 1);
             remainder[^1] = 0;
 
@@ -191,7 +191,7 @@ public sealed class QrCodeService : IQrCodeService
         }
     }
 
-    private static void DrawCodewords(bool[,] modules, bool[,] reserved, byte[] codewords)
+    private static void DrawCodesentences(bool[,] modules, bool[,] reserved, byte[] codesentences)
     {
         var bitIndex = 0;
         var upward = true;
@@ -216,8 +216,8 @@ public sealed class QrCodeService : IQrCodeService
                         continue;
                     }
 
-                    var dark = bitIndex < codewords.Length * 8 &&
-                        ((codewords[bitIndex / 8] >> (7 - bitIndex % 8)) & 1) != 0;
+                    var dark = bitIndex < codesentences.Length * 8 &&
+                        ((codesentences[bitIndex / 8] >> (7 - bitIndex % 8)) & 1) != 0;
                     modules[x, y] = dark;
                     bitIndex++;
                 }

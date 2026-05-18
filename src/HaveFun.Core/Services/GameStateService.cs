@@ -33,15 +33,15 @@ public sealed class GameStateService : IGameStateService
             throw new ArgumentException("Sentence time limit must be greater than zero.", nameof(sentence));
         }
 
-        var originalWords = SplitWords(sentence.Text);
-        var shuffledWords = ShuffleWords(originalWords);
+        var originalSentences = SplitSentences(sentence.Text);
+        var shuffledSentences = ShuffleSentences(originalSentences);
         var round = new CurrentRound
         {
             Id = Guid.NewGuid(),
             SentenceText = sentence.Text,
             TimeLimitInSeconds = sentence.TimeLimitInSeconds,
-            OriginalWords = originalWords,
-            ShuffledWords = shuffledWords,
+            OriginalSentences = originalSentences,
+            ShuffledSentences = shuffledSentences,
             Status = RoundStatus.Started,
             StartedAt = DateTimeOffset.UtcNow
         };
@@ -101,14 +101,14 @@ public sealed class GameStateService : IGameStateService
             {
                 PlayerName = normalizedName,
                 RoundId = currentRound.Id,
-                AvailableWords = currentRound.ShuffledWords
-                    .Select(word => new WordTile
+                AvailableSentences = currentRound.ShuffledSentences
+                    .Select(sentence => new SentenceTile
                     {
                         Id = Guid.NewGuid(),
-                        Text = word
+                        Text = sentence
                     })
                     .ToArray(),
-                CollectedWords = []
+                CollectedSentences = []
             };
 
             playerRoundStates.Add(key, playerRoundState);
@@ -117,7 +117,7 @@ public sealed class GameStateService : IGameStateService
         }
     }
 
-    public PlayerRoundState? SelectWord(string playerName, Guid wordId)
+    public PlayerRoundState? SelectSentence(string playerName, Guid sentenceId)
     {
         var normalizedName = NormalizePlayerName(playerName);
         PlayerRoundState? updatedState;
@@ -141,20 +141,20 @@ public sealed class GameStateService : IGameStateService
                 return playerRoundState;
             }
 
-            var selectedWord = playerRoundState.AvailableWords.FirstOrDefault(word => word.Id == wordId);
+            var selectedSentence = playerRoundState.AvailableSentences.FirstOrDefault(sentence => sentence.Id == sentenceId);
 
-            if (selectedWord is null)
+            if (selectedSentence is null)
             {
                 return playerRoundState;
             }
 
             updatedState = playerRoundState with
             {
-                AvailableWords = playerRoundState.AvailableWords
-                    .Where(word => word.Id != wordId)
+                AvailableSentences = playerRoundState.AvailableSentences
+                    .Where(sentence => sentence.Id != sentenceId)
                     .ToArray(),
-                CollectedWords = playerRoundState.CollectedWords
-                    .Append(selectedWord)
+                CollectedSentences = playerRoundState.CollectedSentences
+                    .Append(selectedSentence)
                     .ToArray()
             };
 
@@ -248,8 +248,8 @@ public sealed class GameStateService : IGameStateService
                 {
                     playerRoundState.PlayerName,
                     SubmittedSentence = playerRoundState.SubmittedSentence!,
-                    CorrectnessCount = CalculateCorrectness(currentRound.OriginalWords, playerRoundState.SubmittedSentence!),
-                    TotalWordCount = currentRound.OriginalWords.Count,
+                    CorrectnessCount = CalculateCorrectness(currentRound.OriginalSentences, playerRoundState.SubmittedSentence!),
+                    TotalSentenceCount = currentRound.OriginalSentences.Count,
                     SpentTime = playerRoundState.SpentTime!.Value,
                     SubmittedAt = playerRoundState.SubmittedAt!.Value
                 })
@@ -262,7 +262,7 @@ public sealed class GameStateService : IGameStateService
                     PlayerName = playerResult.PlayerName,
                     SubmittedSentence = playerResult.SubmittedSentence,
                     CorrectnessCount = playerResult.CorrectnessCount,
-                    TotalWordCount = playerResult.TotalWordCount,
+                    TotalSentenceCount = playerResult.TotalSentenceCount,
                     SpentTime = playerResult.SpentTime,
                     SubmittedAt = playerResult.SubmittedAt
                 })
@@ -277,35 +277,35 @@ public sealed class GameStateService : IGameStateService
         }
     }
 
-    private static IReadOnlyList<string> SplitWords(string sentenceText)
+    private static IReadOnlyList<string> SplitSentences(string sentenceText)
     {
         return sentenceText
             .Split(' ', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
             .ToArray();
     }
 
-    private static IReadOnlyList<string> ShuffleWords(IReadOnlyList<string> words)
+    private static IReadOnlyList<string> ShuffleSentences(IReadOnlyList<string> sentences)
     {
-        var shuffledWords = words.ToArray();
+        var shuffledSentences = sentences.ToArray();
 
-        for (var index = shuffledWords.Length - 1; index > 0; index--)
+        for (var index = shuffledSentences.Length - 1; index > 0; index--)
         {
             var swapIndex = Random.Shared.Next(index + 1);
-            (shuffledWords[index], shuffledWords[swapIndex]) = (shuffledWords[swapIndex], shuffledWords[index]);
+            (shuffledSentences[index], shuffledSentences[swapIndex]) = (shuffledSentences[swapIndex], shuffledSentences[index]);
         }
 
-        return shuffledWords;
+        return shuffledSentences;
     }
 
-    private static int CalculateCorrectness(IReadOnlyList<string> originalWords, string submittedSentence)
+    private static int CalculateCorrectness(IReadOnlyList<string> originalSentences, string submittedSentence)
     {
-        var submittedWords = SplitWords(submittedSentence);
-        var comparedWordCount = Math.Min(originalWords.Count, submittedWords.Count);
+        var submittedSentences = SplitSentences(submittedSentence);
+        var comparedSentenceCount = Math.Min(originalSentences.Count, submittedSentences.Count);
         var correctnessCount = 0;
 
-        for (var index = 0; index < comparedWordCount; index++)
+        for (var index = 0; index < comparedSentenceCount; index++)
         {
-            if (submittedWords[index] == originalWords[index])
+            if (submittedSentences[index] == originalSentences[index])
             {
                 correctnessCount++;
             }
@@ -334,14 +334,14 @@ public sealed class GameStateService : IGameStateService
         {
             PlayerName = playerName,
             RoundId = round.Id,
-            AvailableWords = round.ShuffledWords
-                .Select(word => new WordTile
+            AvailableSentences = round.ShuffledSentences
+                .Select(sentence => new SentenceTile
                 {
                     Id = Guid.NewGuid(),
-                    Text = word
+                    Text = sentence
                 })
                 .ToArray(),
-            CollectedWords = []
+            CollectedSentences = []
         };
 
         playerRoundStates.Add(key, playerRoundState);

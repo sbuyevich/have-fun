@@ -4,7 +4,7 @@ using MudBlazor;
 
 namespace HaveFun.Web;
 
-public partial class PlayerWordScrambler : ComponentBase, IAsyncDisposable
+public partial class PlayerSentenceScrambler : ComponentBase, IAsyncDisposable
 {
     private CancellationTokenSource? timerCancellation;
 
@@ -26,7 +26,7 @@ public partial class PlayerWordScrambler : ComponentBase, IAsyncDisposable
 
     private string RemainingTimeText => $"{(int)RemainingTime.TotalMinutes:00}:{RemainingTime.Seconds:00}";
 
-    private int AvailableWordCount => PlayerRoundState?.AvailableWords.Count ?? CurrentRound?.ShuffledWords.Count ?? 0;
+    private int AvailableSentenceCount => PlayerRoundState?.AvailableSentences.Count ?? CurrentRound?.ShuffledSentences.Count ?? 0;
 
     private bool CanSubmit => PlayerRoundState?.CanSubmit == true;
 
@@ -57,7 +57,7 @@ public partial class PlayerWordScrambler : ComponentBase, IAsyncDisposable
 
         if (currentUser?.Role == Role.Host)
         {
-            NavigationManager.NavigateTo("/host-word-scrambler", replace: true);
+            NavigationManager.NavigateTo("/host-sentence-scrambler", replace: true);
             return;
         }
 
@@ -120,14 +120,14 @@ public partial class PlayerWordScrambler : ComponentBase, IAsyncDisposable
         });
     }
 
-    private void SelectWord(Guid wordId)
+    private void SelectSentence(Guid sentenceId)
     {
         if (PlayerName is null)
         {
             return;
         }
 
-        PlayerRoundState = GameState.SelectWord(PlayerName, wordId);
+        PlayerRoundState = GameState.SelectSentence(PlayerName, sentenceId);
     }
 
     private void SubmitRound()
