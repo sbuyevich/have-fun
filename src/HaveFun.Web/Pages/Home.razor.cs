@@ -9,6 +9,8 @@ public partial class Home : ComponentBase
 
     private string? LanUrl { get; set; }
 
+    private string RegisterUrl { get; set; } = string.Empty;
+
     private int SentenceCount { get; set; }
 
     [Inject]
@@ -29,6 +31,7 @@ public partial class Home : ComponentBase
 
         LocalhostUrl = urls ?? NavigationManager.BaseUri;
         LanUrl = urls ?? NavigationManager.BaseUri;
+        RegisterUrl = BuildRegisterUrl(LanUrl);
         SentenceCount = SentenceLibrary.Sentences.Count;
     }
 
@@ -43,7 +46,16 @@ public partial class Home : ComponentBase
 
         if (currentUser is null)
         {
-            NavigationManager.NavigateTo("/");
+            await UserSessionStorageService.SaveCurrentUserAsync(new SessionStorageModel
+            {
+                Name = "Host",
+                Role = HaveFun.Core.Role.Host,
+            });
         }
+    }
+
+    private static string BuildRegisterUrl(string baseUrl)
+    {
+        return new Uri(new Uri(baseUrl), "register").ToString();
     }
 }

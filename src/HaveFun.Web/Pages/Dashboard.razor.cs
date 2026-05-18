@@ -12,7 +12,7 @@ public partial class Dashboard : ComponentBase, IAsyncDisposable
 
     private string? LanUrl { get; set; }
 
-    private string MasterName { get; set; } = "Master";
+    private string HostName { get; set; } = "Host";
 
     private IReadOnlyList<PlayerSession> Players { get; set; } = [];
 
@@ -56,7 +56,7 @@ public partial class Dashboard : ComponentBase, IAsyncDisposable
     {
         var urls = UrlService.GetLanBaseUrl(NavigationManager.BaseUri);
 
-        LanUrl = urls ?? NavigationManager.BaseUri;
+        LanUrl = BuildRegisterUrl(urls ?? NavigationManager.BaseUri);
         Sentences = SentenceLibrary.Sentences;
         RefreshPlayers();
         RefreshSubmissionProgress();
@@ -81,13 +81,13 @@ public partial class Dashboard : ComponentBase, IAsyncDisposable
 
         var currentUser = await SessionStorageService.GetCurrentUserAsync();
 
-        if (currentUser?.Role != UserRole.Master)
+        if (currentUser?.Role != Role.Host)
         {
-            ErrorMessage = "Join as the configured master to open the dashboard.";
+            ErrorMessage = "Open the host Home page before using the dashboard.";
         }
         else
         {
-            MasterName = currentUser.Name;
+            HostName = currentUser.Name;
         }
 
         IsSessionChecked = true;
@@ -157,5 +157,10 @@ public partial class Dashboard : ComponentBase, IAsyncDisposable
     private static string FormatSpentTime(TimeSpan spentTime)
     {
         return $"{(int)spentTime.TotalMinutes:00}:{spentTime.Seconds:00}";
+    }
+
+    private static string BuildRegisterUrl(string baseUrl)
+    {
+        return new Uri(new Uri(baseUrl), "register").ToString();
     }
 }

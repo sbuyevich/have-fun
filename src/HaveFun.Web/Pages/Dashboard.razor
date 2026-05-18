@@ -2,7 +2,7 @@
 @using HaveFun.Core
 @namespace HaveFun.Web
 
-<PageTitle>Master Dashboard</PageTitle>
+<PageTitle>Host Dashboard</PageTitle>
 
 @if (!IsSessionChecked)
 {
@@ -27,9 +27,9 @@ else
     <MudStack Spacing="4">
         <MudPaper Class="pa-6" Elevation="0" Outlined="true">
             <MudStack Spacing="2">
-                <MudText Typo="Typo.h3">Master Dashboard</MudText>
+                <MudText Typo="Typo.h3">Host Dashboard</MudText>
                 <MudText Typo="Typo.subtitle1" Color="Color.Secondary">
-                    Welcome, @MasterName.
+                    Welcome, @HostName.
                 </MudText>
             </MudStack>
         </MudPaper>
@@ -37,7 +37,7 @@ else
         <MudGrid Spacing="3">
             <MudItem xs="12" md="4">
                 <MudPaper Class="pa-4 h-100" Elevation="0" Outlined="true">
-                    <MudText Typo="Typo.h6" Class="mb-4">Shared LAN URL</MudText>
+                    <MudText Typo="Typo.h6" Class="mb-4">Player Registration URL</MudText>
                     @if (LanUrl is null)
                     {
                         <MudText Typo="Typo.body2" Color="Color.Secondary">

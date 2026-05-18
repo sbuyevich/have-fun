@@ -1,3 +1,4 @@
+@page "/"
 @page "/home"
 @namespace HaveFun.Web
 
@@ -13,17 +14,23 @@
             <MudText Typo="Typo.subtitle1" Color="Color.Secondary">
                 Host a browser game for friends on the same local network.
             </MudText>
+            <MudButton Href="/dashboard"
+                       Color="Color.Primary"
+                       Variant="Variant.Filled"
+                       StartIcon="@Icons.Material.Filled.Dashboard">
+                Open Dashboard
+            </MudButton>
         </MudStack>
     </MudPaper>
 
     <MudGrid Spacing="3">
         <MudItem xs="12" md="6">
             <MudPaper Class="pa-4 h-100" Elevation="0" Outlined="true">
-                <MudText Typo="Typo.h6" Class="mb-4">Join URLs</MudText>
+                <MudText Typo="Typo.h6" Class="mb-4">Player Registration</MudText>
 
                 <MudStack Spacing="3">
                     <MudStack Spacing="1">
-                        <MudText Typo="Typo.subtitle2">Join from another device</MudText>
+                        <MudText Typo="Typo.subtitle2">Register from another device</MudText>
                         @if (LanUrl is null)
                         {
                             <MudText Typo="Typo.body2" Color="Color.Secondary">
@@ -33,7 +40,7 @@
                         else
                         {
                             <MudPaper Class="pa-3" Elevation="0" Outlined="true">
-                                <MudText Typo="Typo.body2"><code>@LanUrl</code></MudText>
+                                <MudText Typo="Typo.body2"><code>@RegisterUrl</code></MudText>
                             </MudPaper>
                         }
                     </MudStack>

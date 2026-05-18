@@ -1,6 +1,5 @@
 using HaveFun.Core;
 using HaveFun.Web;
-using Microsoft.Extensions.Options;
 using MudBlazor.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -9,11 +8,6 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 builder.Services.AddMudServices();
-
-builder.Services.AddOptions<GameOptions>()
-    .Bind(builder.Configuration.GetSection(GameOptions.SectionName))
-    .Validate(options => !string.IsNullOrWhiteSpace(options.MasterName), "Game:MasterName is required.")
-    .ValidateOnStart();
 
 builder.Services.AddSingleton<ISentenceLibraryService>(_ =>
 {
