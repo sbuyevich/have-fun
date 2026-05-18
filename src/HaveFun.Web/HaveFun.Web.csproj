@@ -1,11 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <ItemGroup>
-    <ProjectReference Include="..\HaveFun.Core\HaveFun.Core.csproj" />
+    <Compile Remove="Components\**" />
+    <Content Remove="Components\**" />
+    <EmbeddedResource Remove="Components\**" />
+    <None Remove="Components\**" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Components\" />
+    <ProjectReference Include="..\HaveFun.Core\HaveFun.Core.csproj" />
   </ItemGroup>
 
   <ItemGroup>

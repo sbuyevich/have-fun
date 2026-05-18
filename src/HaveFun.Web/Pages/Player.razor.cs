@@ -38,7 +38,7 @@ public partial class Player : ComponentBase, IAsyncDisposable
     private IPlayerRegistryService PlayerRegistry { get; set; } = default!;
 
     [Inject]
-    private IUserSessionStorageService UserSessionStorage { get; set; } = default!;
+    private ISessionStorageService UserSessionStorageService { get; set; } = default!;
 
     [Inject]
     private IGameStateService GameState { get; set; } = default!;
@@ -50,7 +50,7 @@ public partial class Player : ComponentBase, IAsyncDisposable
             return;
         }
 
-        var currentUser = await UserSessionStorage.GetCurrentUserAsync();
+        var currentUser = await UserSessionStorageService.GetCurrentUserAsync();
 
         if (currentUser?.Role != JoinRole.Player)
         {

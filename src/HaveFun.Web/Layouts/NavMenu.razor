@@ -1,5 +1,5 @@
-@using HaveFun.Core
 @namespace HaveFun.Web
+@inject ISessionStorageService UserSessionStorageService
 
 <MudNavMenu>
     @if (currentUser is not null)
@@ -28,10 +28,7 @@
 </MudNavMenu>
 
 @code {
-    private StoredUserSession? currentUser;
-
-    [Inject]
-    private IUserSessionStorageService UserSessionStorage { get; set; } = default!;
+    private SessionStorageModel? currentUser;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -40,7 +37,7 @@
             return;
         }
 
-        currentUser = await UserSessionStorage.GetCurrentUserAsync();
+        currentUser = await UserSessionStorageService.GetCurrentUserAsync();
         StateHasChanged();
     }
 }

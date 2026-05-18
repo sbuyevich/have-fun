@@ -1,8 +1,6 @@
-using HaveFun.Core;
+namespace HaveFun.Core;
 
-namespace HaveFun.Web;
-
-public sealed record StoredUserSession
+public sealed record SessionStorageModel
 {
     public required string Name { get; init; }
 

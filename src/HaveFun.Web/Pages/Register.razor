@@ -17,11 +17,11 @@
 
                 <form @onsubmit="JoinAsync" @onsubmit:preventDefault="true">
                     <MudStack Spacing="2">
-                        <MudTextField @bind-Value="SubmittedName"
+                        <MudTextField @bind-Value="_submittedName"
                                       Label="Name"
                                       Variant="Variant.Outlined"
-                                      Error="@(ValidationError is not null)"
-                                      ErrorText="@ValidationError"
+                                      Error="@(_validationError is not null)"
+                                      ErrorText="@_validationError"
                                       Immediate="true"
                                       AutoFocus="true" />
                         <MudButton ButtonType="ButtonType.Submit"
@@ -30,16 +30,16 @@
                                    Size="Size.Large"
                                    FullWidth="true"
                                    StartIcon="@Icons.Material.Filled.Login"
-                                   Disabled="@IsJoining">
+                                   Disabled="@_isJoining">
                             Join
                         </MudButton>
                     </MudStack>
                 </form>
 
-                @if (LanUrl is not null)
+                @if (_lanUrl is not null)
                 {
                     <MudText Typo="Typo.caption" Color="Color.Secondary">
-                        Join URL: <code>@LanUrl</code>
+                        Join URL: <code>@_lanUrl</code>
                     </MudText>
                 }
             </MudStack>

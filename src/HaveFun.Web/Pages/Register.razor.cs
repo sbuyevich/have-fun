@@ -6,19 +6,16 @@ namespace HaveFun.Web;
 
 public partial class Register : ComponentBase
 {
-    private string? LanUrl { get; set; }
-
-    private string SubmittedName { get; set; } = string.Empty;
-
-    private string? ValidationError { get; set; }
-
-    private bool IsJoining { get; set; }
+    private string? _lanUrl;
+    private string _submittedName = string.Empty;
+    private string? _validationError;
+    private bool _isJoining;
 
     [Inject]
     private NavigationManager NavigationManager { get; set; } = default!;
 
     [Inject]
-    private IJoinUrlProviderService JoinUrlProvider { get; set; } = default!;
+    private IUrlService UrlService { get; set; } = default!;
 
     [Inject]
     private IOptions<GameOptions> GameOptions { get; set; } = default!;
@@ -27,37 +24,35 @@ public partial class Register : ComponentBase
     private IPlayerRegistryService PlayerRegistry { get; set; } = default!;
 
     [Inject]
-    private IUserSessionStorageService UserSessionStorage { get; set; } = default!;
+    private ISessionStorageService UserSessionStorageService { get; set; } = default!;
 
     protected override void OnInitialized()
     {
-        var urls = JoinUrlProvider.GetJoinUrls(new Uri(NavigationManager.BaseUri));
-
-        LanUrl = urls.LanUrl;
+        _lanUrl = UrlService.GetLanBaseUrl(NavigationManager.BaseUri) ?? NavigationManager.BaseUri;
     }
 
     private async Task JoinAsync()
     {
-        if (IsJoining)
+        if (_isJoining)
         {
             return;
         }
 
-        IsJoining = true;
-        ValidationError = null;
+        _isJoining = true;
+        _validationError = null;
 
-        var submittedName = SubmittedName.Trim();
+        var submittedName = _submittedName.Trim();
 
         if (string.IsNullOrWhiteSpace(submittedName))
         {
-            ValidationError = "Name is required.";
-            IsJoining = false;
+            _validationError = "Name is required.";
+            _isJoining = false;
             return;
         }
 
         if (submittedName.Equals(GameOptions.Value.MasterName.Trim(), StringComparison.OrdinalIgnoreCase))
         {
-            await UserSessionStorage.SaveCurrentUserAsync(new StoredUserSession
+            await UserSessionStorageService.SaveCurrentUserAsync(new SessionStorageModel
             {
                 Name = submittedName,
                 Role = JoinRole.Master,
@@ -70,12 +65,12 @@ public partial class Register : ComponentBase
 
         if (!result.IsSuccess)
         {
-            ValidationError = result.ValidationError ?? "Unable to join with that name.";
-            IsJoining = false;
+            _validationError = result.ValidationError ?? "Unable to join with that name.";
+            _isJoining = false;
             return;
         }
 
-        await UserSessionStorage.SaveCurrentUserAsync(new StoredUserSession
+        await UserSessionStorageService.SaveCurrentUserAsync(new SessionStorageModel
         {
             Name = result.DisplayName,
             Role = JoinRole.Player,

@@ -38,7 +38,7 @@ public partial class Dashboard : ComponentBase, IAsyncDisposable
     private NavigationManager NavigationManager { get; set; } = default!;
 
     [Inject]
-    private IJoinUrlProviderService JoinUrlProvider { get; set; } = default!;
+    private IUrlService UrlService { get; set; } = default!;
 
     [Inject]
     private IPlayerRegistryService PlayerRegistry { get; set; } = default!;
@@ -50,13 +50,13 @@ public partial class Dashboard : ComponentBase, IAsyncDisposable
     private IGameStateService GameState { get; set; } = default!;
 
     [Inject]
-    private IUserSessionStorageService UserSessionStorage { get; set; } = default!;
+    private ISessionStorageService SessionStorageService { get; set; } = default!;
 
     protected override void OnInitialized()
     {
-        var urls = JoinUrlProvider.GetJoinUrls(new Uri(NavigationManager.BaseUri));
+        var urls = UrlService.GetLanBaseUrl(NavigationManager.BaseUri);
 
-        LanUrl = urls.LanUrl ?? urls.LocalhostUrl;
+        LanUrl = urls ?? NavigationManager.BaseUri;
         Sentences = SentenceLibrary.Sentences;
         RefreshPlayers();
         RefreshSubmissionProgress();
@@ -79,7 +79,7 @@ public partial class Dashboard : ComponentBase, IAsyncDisposable
             return;
         }
 
-        var currentUser = await UserSessionStorage.GetCurrentUserAsync();
+        var currentUser = await SessionStorageService.GetCurrentUserAsync();
 
         if (currentUser?.Role != JoinRole.Master)
         {

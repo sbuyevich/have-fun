@@ -15,20 +15,20 @@ public partial class Home : ComponentBase
     private NavigationManager NavigationManager { get; set; } = default!;
 
     [Inject]
-    private IJoinUrlProviderService JoinUrlProvider { get; set; } = default!;
+    private IUrlService UrlService { get; set; } = default!;
 
     [Inject]
     private ISentenceLibraryService SentenceLibrary { get; set; } = default!;
 
     [Inject]
-    private IUserSessionStorageService UserSessionStorage { get; set; } = default!;
+    private ISessionStorageService UserSessionStorageService { get; set; } = default!;
 
     protected override void OnInitialized()
     {
-        var urls = JoinUrlProvider.GetJoinUrls(new Uri(NavigationManager.BaseUri));
+        var urls = UrlService.GetLanBaseUrl(NavigationManager.BaseUri);
 
-        LocalhostUrl = urls.LocalhostUrl;
-        LanUrl = urls.LanUrl;
+        LocalhostUrl = urls ?? NavigationManager.BaseUri;
+        LanUrl = urls ?? NavigationManager.BaseUri;
         SentenceCount = SentenceLibrary.Sentences.Count;
     }
 
@@ -39,7 +39,7 @@ public partial class Home : ComponentBase
             return;
         }
 
-        var currentUser = await UserSessionStorage.GetCurrentUserAsync();
+        var currentUser = await UserSessionStorageService.GetCurrentUserAsync();
 
         if (currentUser is null)
         {

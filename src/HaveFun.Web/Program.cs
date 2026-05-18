@@ -22,16 +22,10 @@ builder.Services.AddSingleton<ISentenceLibraryService>(_ =>
 
     return new InMemorySentenceLibraryService(sentences);
 });
-builder.Services.AddSingleton<IPlayerRegistryService, PlayerRegistryService>();
-builder.Services.AddSingleton<IGameStateService, GameStateService>();
-builder.Services.AddSingleton<IJoinUrlProviderService, JoinUrlProviderService>();
-builder.Services.AddScoped<IUserSessionStorageService, UserSessionStorageService>();
+
+builder.Services.AddCoreServices();
 
 var app = builder.Build();
-
-_ = app.Services.GetRequiredService<IOptions<GameOptions>>().Value;
-_ = app.Services.GetRequiredService<ISentenceLibraryService>();
-_ = app.Services.GetRequiredService<IJoinUrlProviderService>();
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
