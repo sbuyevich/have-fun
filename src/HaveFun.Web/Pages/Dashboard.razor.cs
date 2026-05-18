@@ -22,6 +22,12 @@ public partial class Dashboard : ComponentBase, IAsyncDisposable
 
     private IReadOnlyList<SentenceDefinition> Sentences { get; set; } = [];
 
+    private string SelectedGame { get; set; } = WordScrambleGameName;
+
+    private static IReadOnlyList<string> AvailableGames { get; } = [WordScrambleGameName];
+
+    private const string WordScrambleGameName = "Word Scramble";
+
     private int SelectedSentenceIndex { get; set; } = -1;
 
     private SentenceDefinition? SelectedSentence => SelectedSentenceIndex >= 0 && SelectedSentenceIndex < Sentences.Count

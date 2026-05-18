@@ -62,7 +62,7 @@ public partial class Register : ComponentBase
             Role = Role.Player,
         });
 
-        NavigationManager.NavigateTo("/player");
+        NavigationManager.NavigateTo("/waiting-room");
     }
 
     private static string BuildRegisterUrl(string baseUrl)

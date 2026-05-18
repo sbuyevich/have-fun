@@ -135,7 +135,22 @@ else
 
         <MudPaper Class="pa-4" Elevation="0" Outlined="true">
             <MudGrid Spacing="3">
-                <MudItem xs="12" md="5">
+                <MudItem xs="12" md="3">
+                    <MudSelect T="string"
+                               Label="Game"
+                               Variant="Variant.Outlined"
+                               Value="@SelectedGame"
+                               ValueChanged="@((string value) => SelectedGame = value)">
+                        @foreach (var game in AvailableGames)
+                        {
+                            <MudSelectItem T="string" Value="@game">
+                                @game
+                            </MudSelectItem>
+                        }
+                    </MudSelect>
+                </MudItem>
+
+                <MudItem xs="12" md="4">
                     <MudSelect T="int"
                                Label="Sentence"
                                Variant="Variant.Outlined"
@@ -156,7 +171,7 @@ else
                     </MudSelect>
                 </MudItem>
 
-                <MudItem xs="12" md="5">
+                <MudItem xs="12" md="3">
                     <MudText Typo="Typo.h6">Selected Sentence</MudText>
                     @if (SelectedSentence is null)
                     {
